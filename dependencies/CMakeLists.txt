@@ -41,10 +41,6 @@ IF(USE_GDCM)
   add_subdirectory( gdcm )
 ENDIF()
 
-#add_subdirectory( assimp )
-
-#set(IMGUI_USE_MINIZIP OFF CACHE BOOL "IMGUI_USE_MINIZIP")
-#add_definitions(-DYES_IMGUIADDONS_ALL)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/imgui/ )
 

@@ -20,8 +20,8 @@ set (HUNTER_SKIP_LOCK ON CACHE BOOL "HUNTER_SKIP_LOCK")
 include(cmake/gate/cmake/HunterGate.cmake)
 option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.23.29.tar.gz"
-        SHA1 "797be99a8a4f4666766257563fad8aa3aa032da2"
+        URL "https://github.com/ruslo/hunter/archive/v0.23.130.tar.gz"
+        SHA1 "83f526c350b5dcc9ccdfe6c927d4e951fe78adee"
 )
 project (Engine)
 
@@ -268,6 +268,10 @@ add_definitions(-DASSIMP_BUILD_NO_GLTF_EXPORTER)
 set( ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_3MF_EXPORTER)
 
+IF(ANDROID)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnoc++11-narrowing -std=c++14")
+ENDIF()
+
 hunter_add_package(Assimp)
 find_package(Assimp CONFIG REQUIRED)
 
@@ -315,7 +319,7 @@ IF (EMSCRIPTEN)
 
 ELSEIF (ANDROID)
   add_definitions( -DGLES2=1 )
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wnoc++11-narrowing -std=c++14")
 
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
