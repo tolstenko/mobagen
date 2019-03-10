@@ -187,10 +187,10 @@ matrix:
         - brew update
         - brew cask install caskroom/versions/java8
         - brew install ant
-        - wget --quiet --continue https://dl.google.com/android/repository/android-ndk-r18b-darwin-x86_64.zip -O ndk.zip
+        - wget --quiet --continue https://dl.google.com/android/repository/android-ndk-r18-darwin-x86_64.zip -O ndk.zip
         - unzip -o -q ndk.zip
-        - export ANDROID_NDK=`pwd`/android-ndk-r18b
-        - export ANDROID_NDK_r18b=`pwd`/android-ndk-r18b
+        - export ANDROID_NDK=`pwd`/android-ndk-r18
+        - export ANDROID_NDK_r18=`pwd`/android-ndk-r18
         - mkdir android-sdk-macosx
         - wget --quiet --continue https://dl.google.com/android/repository/tools_r25.2.5-macosx.zip -O android-sdk-macosx/sdk.zip
         - cd android-sdk-macosx ; unzip -o -q sdk.zip ; cd ..

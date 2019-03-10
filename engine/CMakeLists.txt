@@ -32,9 +32,9 @@ If(NOT EMSCRIPTEN AND NOT ANDROID)
   hunter_add_package(glew)
   find_package(glew CONFIG REQUIRED)
 
-  target_link_libraries (engine PUBLIC ${ENGINE_LIBS} glew::glew)
+  target_link_libraries (engine PUBLIC ${ENGINE_LIBS} glew::glew Assimp::assimp)
 ELSE()
-  target_link_libraries (engine PUBLIC ${ENGINE_LIBS})
+  target_link_libraries (engine PUBLIC ${ENGINE_LIBS} Assimp::assimp)
 ENDIF()
 
 # TODO: Check if this approach bellow is better
