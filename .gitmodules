@@ -1,7 +1,3 @@
-[submodule "dependencies/assimp"]
-	path = dependencies/assimp
-	url = https://github.com/assimp/assimp.git
-	branch = 80799bdbf90ce626475635815ee18537718a05b1
 [submodule "dependencies/glm"]
 	path = dependencies/glm
 	url = https://github.com/g-truc/glm.git
