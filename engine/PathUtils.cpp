@@ -1,4 +1,5 @@
 #include "PathUtils.hpp"
+#include "string.hpp"
 #include "Mobagen.hpp"
 
 

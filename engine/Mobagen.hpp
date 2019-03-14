@@ -21,7 +21,7 @@
 #elif ANDROID
 	#define PLATFORM32
 
-#endif  _WIN32
+#endif  
 
 #define STRINGIZE_2( _ ) #_
 #define STRINGIZE( _ ) STRINGIZE_2( _ )
