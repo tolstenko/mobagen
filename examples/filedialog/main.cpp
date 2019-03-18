@@ -19,7 +19,10 @@
 #include <iostream>
 #include <map>
 #include <random>
-#include "PathUtils.hpp"
+
+
+#include<string>
+
 
 class FileDialog : public Game
 {
@@ -35,7 +38,9 @@ void FileDialog::update(Input *input, std::chrono::microseconds delta)
 
 void FileDialog::init(GLManager *glManager)
 {
-	
+
+
+
 	getRootScene()->addComponent<FileDialogGUI>();
 	getRootScene()->getComponent<FileDialogGUI>()->rootScene = getRootScene();
 

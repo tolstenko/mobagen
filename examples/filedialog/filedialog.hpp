@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine.hpp"
 #include "Texture.hpp"
+#include "FileSystem.h"
 using namespace mobagen;
 
 class FileDialogGUI : public Component

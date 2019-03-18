@@ -24,7 +24,7 @@ IF (ANDROID)
     add_custom_command(TARGET filedialog POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 ELSE ()
-    add_executable (filedialog main.cpp filedialog.cpp filedialog.hpp)
+    add_executable (filedialog main.cpp filedialog.cpp filedialog.hpp )
     target_link_libraries (filedialog engine)
 
     add_custom_command(TARGET filedialog PRE_BUILD
