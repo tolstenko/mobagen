@@ -1,11 +1,13 @@
 #include "FileSystem.h"
 #include "imgui.h"
+#include <limits.h>
+#include "stb.h"
 
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui_internal.h"
-
 #include <algorithm>
+
 
 inline bool ReplaceString(std::string& str, const std::string& oldStr, const std::string& newStr)
 {
@@ -291,3 +293,4 @@ std::string FileSystem::GetCurrentFilter()
 {
 	return m_CurrentFilterExt;
 }
+
