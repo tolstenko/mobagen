@@ -1,6 +1,9 @@
 #pragma once
 
 #include <fstream>
+#include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+
 
 #ifdef ANDROID
   #include "AndroidAssetManager.hpp"
