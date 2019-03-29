@@ -22,6 +22,7 @@
 
 
 #include<string>
+#include <boost/filesystem.hpp>
 
 
 class FileDialog : public Game
@@ -53,6 +54,10 @@ void FileDialog::init(GLManager *glManager)
 }
 
 int main(int argc, char *argv[]) {
+
+	namespace fs = boost::filesystem;
+	std::cout << "Current path: " << fs::current_path() << std::endl;
+
 	FileDialog game;
 	Engine gameEngine(&game, "FileDialog", glm::vec2(800, 400));
 

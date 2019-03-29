@@ -16,8 +16,8 @@ set (HUNTER_SKIP_LOCK ON CACHE BOOL "HUNTER_SKIP_LOCK")
 include(cmake/gate/cmake/HunterGate.cmake)
 option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.23.29.tar.gz"
-        SHA1 "797be99a8a4f4666766257563fad8aa3aa032da2"
+    URL "https://github.com/ruslo/hunter/archive/v0.23.146.tar.gz"
+    SHA1 "06f44e121e5ac61c8571203ba47ce0b31187d985"
 )
 project (Engine)
 
@@ -51,6 +51,12 @@ IF(NOT DEFINED ${USE_CURL})
   set( USE_CURL "${STRING_RESULT}" CACHE BOOL "USE CURL?" )
   message(STATUS "USE_CURL from config file: ${USE_CURL}")
 ENDIF()
+
+# download boost
+hunter_add_package(Boost COMPONENTS system filesystem)
+
+# now boost can be used
+find_package(Boost CONFIG REQUIRED system filesystem)
 
 IF(${USE_BULLET})
   hunter_add_package(bullet)
@@ -147,6 +153,8 @@ IF (EMSCRIPTEN)
 
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
+	Boost::filesystem
+    Boost::system
     ${ASSIMP_LIBRARY}
     ${IMGUI_LIBRARY}
     ${GDCM_LIBRARIES}
@@ -194,6 +202,8 @@ ELSE ()
 
   set(ENGINE_LIBS
     SDL2::SDL2
+	Boost::filesystem
+    Boost::system
     ${OPENGL_LIBRARY}
     ${ASSIMP_LIBRARY}
     ${WHEREAMI_LIBRARY}

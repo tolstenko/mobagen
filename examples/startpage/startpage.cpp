@@ -12,8 +12,6 @@
 #include "Logger.hpp"
 
 ImVec2 windowFactor;
-//#include <experimental/filesystem>
-//namespace fs = std::experimental::filesystem;
 
 static bool applied = false;
 
