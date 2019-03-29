@@ -12,8 +12,8 @@
 #include "Logger.hpp"
 
 ImVec2 windowFactor;
-#include <experimental/filesystem>
-namespace fs = std::experimental::filesystem;
+//#include <experimental/filesystem>
+//namespace fs = std::experimental::filesystem;
 
 static bool applied = false;
 
@@ -39,7 +39,7 @@ void StartPage::onGUI(ImGuiContext* context)
 			true,flags);
 	// This field is the body and list of recent projects 	
 
-		std::string dir = ".";
+	/*	std::string dir = ".";
 
 		//if (argv[1])
 		//	dir = argv[1];
@@ -53,11 +53,8 @@ void StartPage::onGUI(ImGuiContext* context)
 			//ImGui::Selectable("C:/Users/Marquinhos/mobagen");
 			// open text file here
 			//std::cout << " " << item.path().string() << '\n';
-		}
+		}*/
 
-		/*ImGui::Selectable("C:/Users/Marquinhos/mobagen");
-		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
-		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
@@ -99,7 +96,10 @@ void StartPage::onGUI(ImGuiContext* context)
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
-		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");*/
+		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
+		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
+		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
+		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
 
 		ImGui::EndChild();
 	}
