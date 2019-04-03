@@ -153,8 +153,7 @@ IF (EMSCRIPTEN)
 
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
-	Boost::filesystem
-    Boost::system
+cc
     ${ASSIMP_LIBRARY}
     ${IMGUI_LIBRARY}
     ${GDCM_LIBRARIES}
@@ -181,6 +180,8 @@ ELSEIF (ANDROID)
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
     SDL2::SDL2
+	Boost::filesystem
+    Boost::system
     ${ASSIMP_LIBRARY}
     ${IMGUI_LIBRARY}
     ${GDCM_LIBRARIES}
