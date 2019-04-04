@@ -48,7 +48,6 @@ void Start::init(GLManager *glManager)
 }
 
 int main(int argc, char *argv[]) {
-
 	
   Start game;
   Engine gameEngine(&game, "Start", glm::vec2(840,640));

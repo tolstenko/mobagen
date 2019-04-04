@@ -53,7 +53,22 @@ void StartPage::onGUI(ImGuiContext* context)
 			//std::cout << " " << item.path().string() << '\n';
 		}*/
 
-		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
+		//std::cout << "Current path: " << fs::current_path() << std::endl;
+
+		namespace fs = boost::filesystem;
+		fs::path p{ "/" };
+		//for (const fs::path &pp : p) {
+		//	std::cout << pp << '\n';
+		//}
+		fs::directory_iterator it(p), eod;
+
+		BOOST_FOREACH(boost::filesystem::path const &pp, std::make_pair(it, eod))
+		{
+			ImGui::Selectable(pp.string().c_str());
+			//std::cout << pp.string() << '\n';
+		}
+
+		/*ImGui::Selectable("C:/Users/Marquinhos/mobagen");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
@@ -97,7 +112,7 @@ void StartPage::onGUI(ImGuiContext* context)
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen");
 		ImGui::Selectable("C:/Users/Marquinhos/mobagen/examples");
-		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");
+		ImGui::Selectable("C:/Users/Marquinhos/mobagen/dependencies");*/
 
 		ImGui::EndChild();
 	}
