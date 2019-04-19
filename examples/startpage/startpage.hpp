@@ -1,8 +1,8 @@
 #pragma once
 #include "Engine.hpp"
 #include "Texture.hpp"
-#include <boost/filesystem.hpp>
-#include <boost/foreach.hpp>
+//#include <boost/filesystem.hpp>
+//#include <boost/foreach.hpp>
 using namespace mobagen;
 
 class StartPage : public Component

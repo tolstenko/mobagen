@@ -53,10 +53,10 @@ IF(NOT DEFINED ${USE_CURL})
 ENDIF()
 
 # download boost
-hunter_add_package(Boost COMPONENTS system filesystem)
+#hunter_add_package(Boost COMPONENTS system filesystem)
 
 # now boost can be used
-find_package(Boost CONFIG REQUIRED system filesystem)
+#find_package(Boost CONFIG REQUIRED system filesystem)
 
 IF(${USE_BULLET})
   hunter_add_package(bullet)
@@ -157,7 +157,6 @@ IF (EMSCRIPTEN)
 
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
-cc
     ${ASSIMP_LIBRARY}
     ${IMGUI_LIBRARY}
     ${GDCM_LIBRARIES}
@@ -185,8 +184,6 @@ ELSEIF (ANDROID)
   # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
     SDL2::SDL2
-	Boost::filesystem
-    Boost::system
     ${ASSIMP_LIBRARY}
     ${IMGUI_LIBRARY}
     ${GDCM_LIBRARIES}
@@ -208,8 +205,6 @@ ELSE ()
 
   set(ENGINE_LIBS
     SDL2::SDL2
-	Boost::filesystem
-    Boost::system
     ${OPENGL_LIBRARY}
     ${ASSIMP_LIBRARY}
     ${WHEREAMI_LIBRARY}
