@@ -62,7 +62,7 @@ EditorGUI::EditorGUI()
 {
 
   FileSystem *fl = new FileSystem();
-  std::vector<std::string> a = fl->ListDirectory("C:/Users/Marquinhos/mobagen");
+  std::vector<std::string> a = fl->ListDirectory(".");
   
   for (std::vector<std::string>::iterator t = a.begin(); t != a.end(); ++t) {
     std::cout<< *t << '\n';
