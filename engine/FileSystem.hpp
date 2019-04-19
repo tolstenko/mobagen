@@ -17,7 +17,7 @@ namespace mobagen {
 
     std::vector<std::string> ListDirectory(std::string path);
 
-    bool IsFile(std::string path);
+    bool IsDirectory(std::string path);
 
     Assimp::IOStream *Open(const char *pFile, const char *pMode);
 
