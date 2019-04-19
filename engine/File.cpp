@@ -1,11 +1,5 @@
 #include "File.hpp"
 
-#ifdef EMSCRIPTEN
-#elif ANDROID
-#else
-  #include <whereami.h>
-#endif
-
 namespace mobagen {
   File::File(const std::string &fileName) {
     m_fileName = fileName;
@@ -15,12 +9,8 @@ namespace mobagen {
 #elif EMSCRIPTEN
     m_file = new std::fstream(ASSET_DIR + fileName, std::ifstream::binary | std::fstream::in | std::fstream::out);
 #else
-    int length = wai_getExecutablePath(NULL, 0, NULL);
-    char *path = new char[length + 1];
-    wai_getExecutablePath(path, length, &length);
-    path[length] = '\0';
-    m_file = new std::fstream((std::string(path) + "/assets/" + fileName).c_str(),
-                              std::ifstream::binary | std::fstream::in | std::fstream::out);
+	m_file = new std::fstream((std::string("assets/") + fileName).c_str(),
+		std::ifstream::binary | std::fstream::in | std::fstream::out);
 #endif
   }
 

@@ -30,9 +30,6 @@ ELSE ()
 #  hunter_add_package(glew)
 #  find_package(glew CONFIG REQUIRED)
 #  #add_subdirectory( glew )
-
-  INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/whereami/src/)
-  add_library (whereami STATIC ${CMAKE_CURRENT_SOURCE_DIR}/whereami/src/whereami.c ${CMAKE_CURRENT_SOURCE_DIR}/whereami/src/whereami.h)
 ENDIF ()
 
 IF(USE_GDCM)

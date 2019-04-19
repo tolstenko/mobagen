@@ -142,9 +142,6 @@ set ( ASSIMP_LIBRARY assimp )
 
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
-set ( WHEREAMI_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/whereami/src/ )
-set ( WHEREAMI_LIBRARY whereami )
-
 set ( IMGUI_INCLUDE_DIRS
   ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/)
 
@@ -207,7 +204,6 @@ ELSE ()
     SDL2::SDL2
     ${OPENGL_LIBRARY}
     ${ASSIMP_LIBRARY}
-    ${WHEREAMI_LIBRARY}
     ${IMGUI_LIBRARY}
   )
   set(ENGINE_INCLUDES
@@ -215,7 +211,6 @@ ELSE ()
       ${ASSIMP_INCLUDE_DIR}
       ${CMAKE_BINARY_DIR}/dependencies/assimp/include
       ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
-      ${WHEREAMI_INCLUDE_DIRS}
       ${IMGUI_INCLUDE_DIRS}
       ${CMAKE_CURRENT_SOURCE_DIR}/engine/
     )

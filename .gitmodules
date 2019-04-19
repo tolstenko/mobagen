@@ -6,10 +6,6 @@
 	path = dependencies/glm
 	url = https://github.com/g-truc/glm.git
 	branch = 09241ec000060fd3d085a11d608eb7909e004c75
-[submodule "dependencies/whereami"]
-	path = dependencies/whereami
-	url = https://github.com/gpakosz/whereami.git
-	branch = 574cea670800e402c9c8325b159aa4361b645566
 [submodule "dependencies/imgui"]
 	path = dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
