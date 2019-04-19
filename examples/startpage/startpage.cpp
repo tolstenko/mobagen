@@ -11,6 +11,9 @@
 #include "Material.hpp"
 #include "Logger.hpp"
 
+#include "FileSystem.hpp"
+#include <iostream>
+
 ImVec2 windowFactor;
 
 static bool applied = false;
@@ -35,6 +38,14 @@ void StartPage::onGUI(ImGuiContext* context)
 		ImGui::BeginChild("projects_content",
 			ImVec2(ImGui::GetContentRegionAvail().x * 0.8f, ImGui::GetContentRegionAvail().y*0.9f),
 			true,flags);
+
+		FileSystem *fl = new FileSystem();
+		std::vector<std::string> a = fl->ListDirectory(".");
+
+		for (std::vector<std::string>::iterator t = a.begin(); t != a.end(); ++t) {
+		//	std::cout << *t << '\n';
+			ImGui::Selectable(std::string(*t).c_str());
+		}
 	// This field is the body and list of recent projects 	
 
 	/*	std::string dir = ".";

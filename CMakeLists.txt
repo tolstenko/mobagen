@@ -92,7 +92,7 @@ ENDIF()
 set(NOMINMAX ON CACHE BOOL "workaround for minmax problem with windows.h")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cotire)
@@ -174,6 +174,7 @@ IF (EMSCRIPTEN)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/doceditor.html ${CMAKE_BINARY_DIR}/bin/doceditor.html COPYONLY)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/animation.html ${CMAKE_BINARY_DIR}/bin/animation.html COPYONLY)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/uploader.html ${CMAKE_BINARY_DIR}/bin/uploader.html COPYONLY)
+  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/startpage.html ${CMAKE_BINARY_DIR}/bin/startpage.html COPYONLY)
 
 ELSEIF (ANDROID)
   add_definitions( -DGLES2=1 )
