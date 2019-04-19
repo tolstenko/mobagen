@@ -24,7 +24,7 @@ void FileDialogGUI::onGUI(ImGuiContext* context)
 
 		ImGui::Begin("UPLOADER", nullptr, ImVec2(128 * windowFactor.x, 128 * windowFactor.y), 0, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove);
 		ImGui::SetWindowPos(ImVec2(370 * windowFactor.x, 20 * windowFactor.y), 0);
-		FileSystem::Instance()->FileDialog("Choose File", ".cpp\0.h\0.hpp\0\0", ".", "");
+		//FileSystem::Instance()->FileDialog("Choose File", ".cpp\0.h\0.hpp\0\0", ".", "");
 		
 		
 
