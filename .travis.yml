@@ -118,7 +118,6 @@ matrix:
             - g++
             - cmake
             - clang
-            - cmake
             - git
             - build-essential
             - libgl1-mesa-dev
@@ -129,78 +128,73 @@ matrix:
       language: cpp
       compiler: clang
       script:
-        - ./scripts/travis-build.sh -j9
+        - cmake --version
+        - ./scripts/travis-build.sh
 
     # linux emscripten
     - os: linux
+#      jdk: openjdk8
       services:
         - docker
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - cmake
+#      addons:
+#        apt:
+#          sources:
+#            - ubuntu-toolchain-r-test
+#          packages:
+#            - build-essential
       env:
         - BUILD_TYPE=emscripten
       group: travis_latest
-      dist: trusty
+      dist: xenial
       language: cpp
       compiler: emscripten
       install:
-        - docker run -dit --name emscripten -e TRAVIS_OS_NAME='linux' -e BUILD_TYPE='emscripten' -v `pwd`:/mobagen -v ${HOME}/.hunter:/root/.hunter -w /mobagen trzeci/emscripten:sdk-tag-1.38.12-64bit bash
-        - docker exec -it emscripten apt-get update
-        - docker exec -it emscripten apt-get install -y wget
-        - docker exec -it emscripten wget --quiet --continue https://github.com/Kitware/CMake/releases/download/v3.14.0-rc3/cmake-3.14.0-rc3-Linux-x86_64.sh
-        - docker exec -it emscripten chmod +x cmake-3.14.0-rc3-Linux-x86_64.sh
-        - docker exec -it emscripten rm -rf /opt/cmake
-        - docker exec -it emscripten mkdir /opt/cmake
-        - docker exec -it emscripten ./cmake-3.14.0-rc3-Linux-x86_64.sh --prefix=/opt/cmake --skip-license
-        - docker exec -it emscripten rm -rf /usr/bin/cmake /usr/local/bin/cmake
-        - docker exec -it emscripten ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
-        - docker exec -it emscripten ln -s /opt/cmake/bin/cmake /usr/bin/cmake
-        - docker exec -it emscripten cmake --version
+        - cmake --version
+        - ./dependencies/emsdk/emsdk install sdk-1.38.12-64bit
+        - ./dependencies/emsdk/emsdk activate sdk-1.38.12-64bit
       script:
-        - docker exec -it emscripten ./scripts/travis-build.sh
-        - docker exec -it emscripten ./scripts/travis-build.sh
+        - ./scripts/travis-build.sh
+        - ./scripts/travis-build.sh
 
     # osx native
     - os: osx
       env:
         - BUILD_TYPE=native
-        - MATRIX_EVAL="CC=clang && CXX=clang++"
+        - MATRIX_EVAL="CC=gcc && CXX=g++"
       language: cpp
-      compiler: clang
-      script:
-        - ./scripts/travis-build.sh -j9
-
-    # osx android
-    - os: osx
-      env:
-        - BUILD_TYPE=android
-      osx_image: xcode9.3
-      language: cpp
+      compiler: cpp
       install:
-        - TRAVIS_TAG=`date +%Y-%m-%d`
-        - brew tap caskroom/cask
-        - brew update
-        - brew cask install caskroom/versions/java8
-        - brew install ant
-        - wget --quiet --continue https://dl.google.com/android/repository/android-ndk-r18b-darwin-x86_64.zip -O ndk.zip
-        - unzip -o -q ndk.zip
-        - export ANDROID_NDK=`pwd`/android-ndk-r18b
-        - export ANDROID_NDK_r18b=`pwd`/android-ndk-r18b
-        - mkdir android-sdk-macosx
-        - wget --quiet --continue https://dl.google.com/android/repository/tools_r25.2.5-macosx.zip -O android-sdk-macosx/sdk.zip
-        - cd android-sdk-macosx ; unzip -o -q sdk.zip ; cd ..
-        - export ANDROID_SDK=`pwd`/android-sdk-macosx
-        - export ANDROID_HOME=$ANDROID_SDK
-        - export PATH=${ANDROID_SDK}/tools:${ANDROID_SDK}/tools/bin:${PATH}
-        - echo y | sdkmanager 'build-tools;24.0.1' 'platforms;android-24' 'platform-tools'
-        - export PATH=${ANDROID_SDK}/platform-tools:${ANDROID_NDK}:${PATH}
+        - brew upgrade cmake
+        - cmake --version
       script:
-        - ./scripts/cmake-android.sh
+        - ./scripts/travis-build.sh
+
+#    # osx android
+#    - os: osx
+#      env:
+#        - BUILD_TYPE=android
+#      osx_image: xcode9.3
+#      language: cpp
+#      install:
+#        - TRAVIS_TAG=`date +%Y-%m-%d`
+#        - brew tap caskroom/cask
+#        - brew update
+#        - brew cask install caskroom/versions/java8
+#        - brew install ant
+#        - wget --quiet --continue https://dl.google.com/android/repository/android-ndk-r18b-darwin-x86_64.zip -O ndk.zip
+#        - unzip -o -q ndk.zip
+#        - export ANDROID_NDK=`pwd`/android-ndk-r18b
+#        - export ANDROID_NDK_r18b=`pwd`/android-ndk-r18b
+#        - mkdir android-sdk-macosx
+#        - wget --quiet --continue https://dl.google.com/android/repository/tools_r25.2.5-macosx.zip -O android-sdk-macosx/sdk.zip
+#        - cd android-sdk-macosx ; unzip -o -q sdk.zip ; cd ..
+#        - export ANDROID_SDK=`pwd`/android-sdk-macosx
+#        - export ANDROID_HOME=$ANDROID_SDK
+#        - export PATH=${ANDROID_SDK}/tools:${ANDROID_SDK}/tools/bin:${PATH}
+#        - echo y | sdkmanager 'build-tools;24.0.1' 'platforms;android-24' 'platform-tools'
+#        - export PATH=${ANDROID_SDK}/platform-tools:${ANDROID_NDK}:${PATH}
+#      script:
+#        - ./scripts/cmake-android.sh
 
 before_script:
   - TRAVIS_TAG=`date +%Y-%m-%d`

@@ -4,7 +4,7 @@
 
 namespace mobagen {
   Asset::Asset(const std::string &fileName) {
-    m_ioStream = new EngineIOStream(fileName);
+    m_ioStream = new File(fileName);
     m_fileSize = m_ioStream->fileSize();
     m_buffer = new char[m_fileSize + 1];
     m_buffer[m_fileSize] = '\0';
@@ -21,7 +21,7 @@ namespace mobagen {
     return m_buffer;
   }
 
-  EngineIOStream *Asset::getIOStream(void) const {
+  File *Asset::getIOStream(void) const {
     return m_ioStream;
   }
 }

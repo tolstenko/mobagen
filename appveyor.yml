@@ -230,6 +230,11 @@ before_build:
 # scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
 before_package:
 
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - cmake --build build
+
 # scripts to run after build
 after_build:
  - |-
@@ -242,9 +247,6 @@ after_build:
     dir build\x64
     7z a -r WindowsVs2017x86_64 ./build/bin
 
-# to run your custom scripts instead of automatic MSBuild
-build_script:
-  - cmake --build build
 
 # to disable automatic builds
 #build: off

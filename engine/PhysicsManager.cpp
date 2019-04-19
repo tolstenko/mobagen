@@ -33,7 +33,7 @@ namespace mobagen {
   }
 
   void PhysicsManager::tick(std::chrono::microseconds delta) {
-    m_dynamicsWorld->stepSimulation(std::chrono::duration_cast<std::chrono::duration<float>>(delta).count());
+    m_dynamicsWorld->stepSimulation(std::chrono::duration_cast<std::chrono::duration<float>>(delta).count(),0,1.0f/360);
   }
 
   Entity *PhysicsManager::pick(Ray *ray) const {

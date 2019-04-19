@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineIOStream.hpp"
+#include "File.hpp"
 
 namespace mobagen {
   class Asset {
@@ -11,11 +11,11 @@ namespace mobagen {
 
     const char *read(void) const;
 
-    EngineIOStream *getIOStream(void) const;
+    File *getIOStream(void) const;
 
   private:
     char *m_buffer;
-    EngineIOStream *m_ioStream;
+    File *m_ioStream;
     size_t m_fileSize;
   };
 }

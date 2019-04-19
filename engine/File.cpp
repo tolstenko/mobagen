@@ -1,4 +1,4 @@
-#include "EngineIOStream.hpp"
+#include "File.hpp"
 
 #ifdef EMSCRIPTEN
 #elif ANDROID
@@ -7,7 +7,7 @@
 #endif
 
 namespace mobagen {
-  EngineIOStream::EngineIOStream(const std::string &fileName) {
+  File::File(const std::string &fileName) {
     m_fileName = fileName;
 
 #ifdef ANDROID
@@ -24,7 +24,7 @@ namespace mobagen {
 #endif
   }
 
-  EngineIOStream::~EngineIOStream(void) {
+  File::~File(void) {
 #ifndef ANDROID
     delete m_file;
 #else
@@ -32,7 +32,7 @@ namespace mobagen {
 #endif
   }
 
-  size_t EngineIOStream::read(void *pvBuffer, size_t pSize, size_t pCount) {
+  size_t File::read(void *pvBuffer, size_t pSize, size_t pCount) {
 #ifndef ANDROID
     m_file->read((char *) pvBuffer, pSize * pCount);
     return m_file->gcount();
@@ -41,7 +41,7 @@ namespace mobagen {
 #endif
   }
 
-  size_t EngineIOStream::write(const void *pvBuffer, size_t pSize, size_t pCount) {
+  size_t File::write(const void *pvBuffer, size_t pSize, size_t pCount) {
 #ifndef ANDROID
     m_file->write((char *) pvBuffer, pSize * pCount);
     return pSize * pCount;
@@ -50,7 +50,7 @@ namespace mobagen {
 #endif
   }
 
-  bool EngineIOStream::seek(size_t pOffset, origin pOrigin) {
+  bool File::seek(size_t pOffset, origin pOrigin) {
     switch (pOrigin) {
       case Origin_SET:
 #ifndef ANDROID
@@ -86,7 +86,7 @@ namespace mobagen {
     return true;
   }
 
-  size_t EngineIOStream::tell(void) const {
+  size_t File::tell(void) const {
 #ifndef ANDROID
     return m_file->tellg();
 #else
@@ -94,7 +94,7 @@ namespace mobagen {
 #endif
   }
 
-  size_t EngineIOStream::fileSize(void) const {
+  size_t File::fileSize(void) const {
 #ifndef ANDROID
     size_t cur = m_file->tellg();
     m_file->seekg(0, std::ios::end);
@@ -108,13 +108,13 @@ namespace mobagen {
 #endif
   }
 
-  void EngineIOStream::flush(void) {
+  void File::flush(void) {
 #ifndef ANDROID
     m_file->flush();
 #endif
   }
 
-  std::string EngineIOStream::getFileName(void) {
+  std::string File::getFileName(void) {
     return m_fileName;
   }
 }

@@ -6,6 +6,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <chrono>
 
 #include <limits>
 
@@ -13,8 +14,11 @@
 #include <emscripten.h>
 #endif
 
-// TODO: DO WE NEED FIXED UPDATES?
-// std::chrono::microseconds FIXED_TIME_STEP(std::chrono::milliseconds(20));
+#if defined(__MINGW32__) || defined(_MSC_VER)
+#include <thread>
+#endif
+
+using namespace std::chrono_literals;
 
 namespace mobagen {
 #ifdef EMSCRIPTEN
@@ -38,6 +42,8 @@ namespace mobagen {
 
     quit = false;
     m_fireRay = false;
+
+    m_targetSleepTime = std::chrono::duration<long long, std::micro>(1000000/60);
   }
 
   Engine::~Engine(void) {
@@ -79,16 +85,32 @@ namespace mobagen {
     });
 
     m_time = std::chrono::high_resolution_clock::now();
-    // TODO: DO WE NEED FIXED UPDATES?
-    //m_physicsTimeSimulated = std::chrono::high_resolution_clock::now();
+
+    m_physicsTimeStepSize = std::chrono::microseconds(1000000/360); // 6 steps per frame
+    m_physicsTimeAccumulated = std::chrono::microseconds(0);
 
 #ifdef EMSCRIPTEN
     instance = this;
-
     emscripten_set_main_loop(Engine::loop, 0, 1);
 #else
+    auto preTick = std::chrono::high_resolution_clock::now();
+    auto m_sleepError = std::chrono::microseconds(0);
     while (!quit) {
       tick();
+      auto posTick = std::chrono::high_resolution_clock::now();
+      auto tickTime = std::chrono::duration_cast<std::chrono::microseconds>(posTick - preTick);
+      auto sleepTime = std::chrono::duration_cast<std::chrono::microseconds>(m_targetSleepTime - tickTime - m_sleepError);
+
+      if(sleepTime<std::chrono::microseconds::zero()) sleepTime = std::chrono::microseconds::zero();
+#if defined(__MINGW32__) || defined(_MSC_VER)
+      std::this_thread::sleep_for(sleepTime);
+#else
+      SDL_Delay((uint32_t)(sleepTime.count()/1000));
+#endif
+
+      auto posSleep = std::chrono::high_resolution_clock::now();
+      m_sleepError = std::chrono::duration_cast<std::chrono::microseconds>(posSleep-posTick) - sleepTime;
+      preTick = posSleep;
     }
 #endif
   }
@@ -110,30 +132,17 @@ namespace mobagen {
 
     quit = m_window.get()->shouldQuit();
 
-    m_physicsManager.get()->tick(m_deltaTime);
-
-    /* TODO: DO WE NEED FIXED UPDATES?
-    while (m_physicsTimeSimulated < m_time) {
-
-      m_physicsTimeSimulated += FIXED_TIME_STEP;
-    }*/
+    // Fixed timestep
+    m_physicsTimeAccumulated += m_deltaTime; // get the remaining from the last step
+    while (m_physicsTimeAccumulated >= m_physicsTimeStepSize) {
+      m_physicsTimeAccumulated -= m_physicsTimeStepSize;
+      m_physicsManager.get()->tick(m_physicsTimeStepSize);
+    }
+    // TODO: we need to simulate the remaining time and render it in order to avoid jitter on the last simulation step
 
     game->update(m_window->getInput(), m_deltaTime);
 
     game->render(m_glManager.get());
-
-//    if (m_fireRay) {
-//      Ray ray = Ray::getPickRay(m_window->getInput()->getMousePosition(), m_window->getViewport(),
-//                                m_glManager->getViewMatrix(), m_glManager->getProjectionMatrix());
-//
-//      Entity *pickedEntity = m_physicsManager->pick(&ray);
-//
-//      if (pickedEntity != nullptr) {
-//        m_glManager->drawEntity(pickedEntity);
-//      }
-//
-//      m_glManager->drawLine(ray.getLine(10000.0f));
-//    }
 
     m_window->getGuiManager()->render(game->getRootScene().get());
 

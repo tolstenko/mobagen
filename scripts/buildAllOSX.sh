@@ -41,7 +41,7 @@ export TRAVIS_OS_NAME=osx
 export BUILD_TYPE=native
 #todo: make this portable
 export NPROC=`sysctl -n hw.ncpu`
-$DIR/cmake-make.sh -j9
+$DIR/cmake-make.sh
 
 # emscripten build
 export TRAVIS_OS_NAME=linux
@@ -50,8 +50,8 @@ docker run -dit --name emscripten -e TRAVIS_OS_NAME='linux' -e BUILD_TYPE='emscr
 docker exec -it emscripten apt-get update
 docker exec -it emscripten rm /usr/local/bin/cmake
 docker exec -it emscripten apt-get install -y cmake wget
-docker exec -it emscripten ./scripts/travis-build.sh -j9
-docker exec -it emscripten ./scripts/travis-build.sh -j9
+docker exec -it emscripten ./scripts/travis-build.sh
+docker exec -it emscripten ./scripts/travis-build.sh
 
 # mingw build
 export TRAVIS_OS_NAME=linux
@@ -59,5 +59,5 @@ export BUILD_TYPE=windows
 docker run -dit --name windows -e TRAVIS_OS_NAME='linux' -e BUILD_TYPE='windows' -v $DIR/../:/mobagen -w /mobagen library/ubuntu:bionic bash ;
 docker exec -it windows apt-get update ;
 docker exec -it windows apt-get install -y cmake wget binutils-mingw-w64* gcc-mingw-w64* g++-mingw-w64* wine-development git mingw-w64 mingw-w64-tools binutils-mingw-w64 binutils-mingw-w64-x86-64 binutils-mingw-w64-i686 mingw-w64-x86-64-dev mingw-w64-i686-dev autoconf automake autotools-dev zip ;
-docker exec -it windows ./scripts/travis-build.sh -j9 ;
-docker exec -it windows ./scripts/travis-build.sh -j9 ;
+docker exec -it windows ./scripts/travis-build.sh
+docker exec -it windows ./scripts/travis-build.sh

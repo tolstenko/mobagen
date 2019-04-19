@@ -5,5 +5,5 @@ docker run -dit --name emscripten -e TRAVIS_OS_NAME='linux' -e BUILD_TYPE='emscr
 docker exec -it emscripten apt-get update
 docker exec -it emscripten rm /usr/local/bin/cmake
 docker exec -it emscripten apt-get install -y cmake wget
-docker exec -it emscripten ./scripts/travis-build.sh -j9
-docker exec -it emscripten ./scripts/travis-build.sh -j9
+docker exec -it emscripten ./scripts/travis-build.sh
+docker exec -it emscripten ./scripts/travis-build.sh

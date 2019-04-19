@@ -14,6 +14,7 @@ IF (EMSCRIPTEN)
 
 ELSEIF (ANDROID)
   # set( SDL_FILESYSTEM FALSE )
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
   set( PTHREADS OFF CACHE BOOL "Pthread support" )
   add_definitions(-DGL_GLEXT_PROTOTYPES)
 ELSE ()
@@ -41,9 +42,17 @@ IF(USE_GDCM)
   add_subdirectory( gdcm )
 ENDIF()
 
+
+# Avoid assimp bug for android
+IF (ANDROID)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-narrowing")
+ENDIF()
+
 set( ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "Build assimp tools" )
 set( ASSIMP_BUILD_TESTS OFF CACHE BOOL "Build assimp tests" )
 set( ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "Build assimp samples" )
+set( ASSIMP_NO_EXPORT ON CACHE BOOL "ASSIMP_NO_EXPORT" )
+set( ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT" )
 
 set( ASSIMP_BUILD_3DS_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_3DS_EXPORTER)
@@ -90,13 +99,13 @@ add_definitions(-DASSIMP_BUILD_NO_LWO_EXPORTER)
 set( ASSIMP_BUILD_LWS_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_LWS_EXPORTER)
 
-set( ASSIMP_BUILD_MD2_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_MD2_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_MD2_EXPORTER)
 
-set( ASSIMP_BUILD_MD3_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_MD3_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_MD3_EXPORTER)
 
-set( ASSIMP_BUILD_MD5_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_MD5_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_MD5_EXPORTER)
 
 set( ASSIMP_BUILD_MDC_IMPORTER OFF CACHE BOOL "Build importer" )
@@ -132,7 +141,7 @@ add_definitions(-DASSIMP_BUILD_NO_MS3D_EXPORTER)
 set( ASSIMP_BUILD_COB_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_COB_EXPORTER)
 
-set( ASSIMP_BUILD_BLEND_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_BLEND_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_BLEND_EXPORTER)
 
 set( ASSIMP_BUILD_IFC_IMPORTER OFF CACHE BOOL "Build importer" )
@@ -168,7 +177,7 @@ add_definitions(-DASSIMP_BUILD_NO_TERRAGEN_EXPORTER)
 set( ASSIMP_BUILD_3D_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_3D_EXPORTER)
 
-set( ASSIMP_BUILD_X_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_X_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_XFILE_EXPORTER)
 
 set( ASSIMP_BUILD_GLTF_IMPORTER OFF CACHE BOOL "Build importer" )
@@ -184,25 +193,22 @@ add_subdirectory( assimp )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/imgui/ )
 
-add_library (imgui STATIC 
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.h 
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp 
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp 
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp 
-) 
-
-
-
+add_library (imgui STATIC
+  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp
+)
 
 #execute_process( COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/openssl/config no-shared no-engine no-hw no-dso --prefix=${CMAKE_BINARY_DIR} )
-#execute_process( COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl depend -j9 && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl -j9 && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl install_sw )
+#execute_process( COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl depend && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl install_sw )
 
 #include(ExternalProject)
 #ExternalProject_Add(
 #    openssl
 #    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/openssl"
 #    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/dependencies/openssl/config no-shared no-engine no-hw no-dso --prefix=${CMAKE_BINARY_DIR}
-#    BUILD_COMMAND make depend -j9 && make -j9
+#    BUILD_COMMAND make depend && make
 #    INSTALL_COMMAND make install_sw
 #    BUILD_IN_SOURCE 1
 #)
