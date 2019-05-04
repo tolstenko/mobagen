@@ -114,11 +114,9 @@ matrix:
         - BUILD_TYPE=native
       script:
         - git submodule update --init --recursive
-        - set PATH=%PATH:C:\Program Files\Git\usr\bin\;=%
-        - set PATH=%PATH:C:/Program Files/Git/usr/bin/;=%
-        - echo %PATH%
         - cmake --version
-        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake
+        - which cmake
+        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake ; cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake
         - cmake --build build
 
     # linux native
