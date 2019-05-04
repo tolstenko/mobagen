@@ -116,11 +116,14 @@ matrix:
         - git submodule update --init --recursive
         - cmake --version
         - which cmake
-        - which sh
+        - directory_to_remove="/c/Program Files/Git/cmd"
+        - export PATH=${PATH//:$directory_to_remove:/:}
+#        - mv /bin/sh /bin/sh2
         - echo ${PATH}
         - cmake -DCMAKE_SH="CMAKE_SH-NOTFOUND" -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=`pwd`/dependencies/polly/mingw-cxx17.cmake 2>&1
-        - cmake -DCMAKE_SH="CMAKE_SH-NOTFOUND" -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=`pwd`/dependencies/polly/mingw-cxx17.cmake 2>&1
         - cmake --build build
+#        - mv /bin/sh2 /bin/sh
+
 
     # linux native
     - os: linux
