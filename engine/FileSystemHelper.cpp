@@ -7,7 +7,7 @@ namespace mobagen {
 
   bool FileSystemHelper::Exists(const char* pFile) const
   {
-	return FileSystem::Exists(pFile);
+	  return FileSystem::Exists(pFile);
   }
 
   bool FileSystemHelper::ComparePaths(const char *one, const char *second) const

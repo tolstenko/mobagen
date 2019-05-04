@@ -76,10 +76,10 @@ EditorGUI::EditorGUI()
 
   log_info("%d",data.size());
   log_info("%d",data.size());
-  request.SetUrl("http://httpbin.org/post");
-  request.AddMultiPart("field","filename.txt",data,"text/plain");
-  auto resp =request.Post();
-  log_info("%s",resp.text.data());
+//  request.SetUrl("http://httpbin.org/post");
+//  request.AddMultiPart("field","filename.txt",data,"text/plain");
+//  auto resp =request.Post();
+//  log_info("%s",resp.text.data());
 }
 
 

@@ -32,17 +32,6 @@ IF (ANDROID)
     add_custom_command(TARGET simple POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 ELSE ()
-  IF(NOT EMSCRIPTEN AND USE_CURL)
-    add_executable (simple ${TARGET_SRC})
-    hunter_add_package(CURL)
-    find_package(CURL CONFIG REQUIRED)
-    target_link_libraries (simple engine CURL::libcurl)
-    #cotire(simple)
-    add_custom_command(TARGET simple PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory
-      ${CMAKE_SOURCE_DIR}/assets
-      $<TARGET_FILE_DIR:simple>/assets)
-  ELSE()
     add_executable (simple ${TARGET_SRC})
     target_link_libraries (simple engine)
     #cotire(simple)
@@ -50,5 +39,4 @@ ELSE ()
       COMMAND ${CMAKE_COMMAND} -E copy_directory
       ${CMAKE_SOURCE_DIR}/assets
       $<TARGET_FILE_DIR:simple>/assets)
-  ENDIF()
 ENDIF ()

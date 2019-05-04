@@ -25,22 +25,22 @@ namespace mobagen
   auto FileSystem::Exists(const char* path) -> bool
   {
     struct stat s {};
-	if (stat(path, &s) == 0)
-	{
-	  if (s.st_mode & S_IFDIR)
-		return true; // dir
-	  else if (s.st_mode & S_IFREG)
-		return true; // file
-	  else
-		return false; //something else
-	}
-	else
-	  return false;
+    if (stat(path, &s) == 0)
+    {
+	    if (s.st_mode & S_IFDIR)
+		    return true; // dir
+	    else if (s.st_mode & S_IFREG)
+		    return true; // file
+	    else
+		    return false; //something else
+	  }
+    else
+      return false;
   }
 
   auto FileSystem::Exists(std::string path) -> bool
   {
-	return Exists(path.c_str());
+    return Exists(path.c_str());
   }
 
   auto FileSystem::ComparePaths(const char* one, const char* second) -> bool
@@ -55,7 +55,9 @@ namespace mobagen
 
   auto FileSystem::PathSeparator() -> char
   {
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(__MINGW64__) || defined(__MINGW32__)
+      return '/';
+#elif defined(_WIN32) || defined(_WIN64)
 	  return '\\';
 #else
 	  return '/';
@@ -69,48 +71,48 @@ namespace mobagen
 
   auto FileSystem::ListDirectory(const char* path) -> std::vector<std::string>
   {
-	std::vector<std::string> contents;
+    std::vector<std::string> contents;
 
     if(!IsDirectory(path))
     {
-	  log_err("Path is not a directory: %s", path);
-	  return contents;
+      log_err("Path is not a directory: %s", path);
+      return contents;
     }
 
-	const auto dir = opendir(path);
-	struct dirent * dp;
-	while ((dp = readdir(dir)) != nullptr)
-	  contents.emplace_back(dp->d_name);
-	closedir(dir);
+    const auto dir = opendir(path);
+    struct dirent * dp;
+    while ((dp = readdir(dir)) != nullptr)
+      contents.emplace_back(dp->d_name);
+    closedir(dir);
 
-	return contents;
+    return contents;
   }
 
   auto FileSystem::ListDirectoryFiles(const std::string& path) -> std::vector<std::string>
   {
-	return ListDirectoryFiles(path.c_str());
+    return ListDirectoryFiles(path.c_str());
   }
 
   auto FileSystem::ListDirectoryFiles(const char* path) -> std::vector<std::string>
   {
-	std::vector<std::string> contents;
+    std::vector<std::string> contents;
 
-	if (!IsDirectory(path))
-	{
-	  log_err("Path is not a directory: %s", path);
-	  return contents;
-	}
+    if (!IsDirectory(path))
+    {
+      log_err("Path is not a directory: %s", path);
+      return contents;
+    }
 
-	const auto dir = opendir(path);
-	struct dirent * dp;
-	while ((dp = readdir(dir)) != nullptr)
-	{
-	  if(IsFile(dp->d_name))
-	    contents.emplace_back(dp->d_name);
-	}
+    const auto dir = opendir(path);
+    struct dirent * dp;
+    while ((dp = readdir(dir)) != nullptr)
+    {
+      if(IsFile(dp->d_name))
+        contents.emplace_back(dp->d_name);
+    }
   	closedir(dir);
 
-	return contents;
+    return contents;
   }
 
   auto FileSystem::ListDirectoryFolders(const std::string& path) -> std::vector<std::string>
@@ -120,32 +122,32 @@ namespace mobagen
 
   auto FileSystem::ListDirectoryFolders(const char* path) -> std::vector<std::string>
   {
-	std::vector<std::string> contents;
+    std::vector<std::string> contents;
 
-	if (!IsDirectory(path))
-	{
-	  log_err("Path is not a directory: %s", path);
-	  return contents;
-	}
+    if (!IsDirectory(path))
+    {
+      log_err("Path is not a directory: %s", path);
+      return contents;
+    }
 
-	const auto dir = opendir(path);
-	struct dirent * dp;
-	while ((dp = readdir(dir)) != nullptr)
-	{
-	  if(IsDirectory(dp->d_name))
-	    contents.emplace_back(dp->d_name);
-	}
-  	closedir(dir);
+    const auto dir = opendir(path);
+    struct dirent * dp;
+    while ((dp = readdir(dir)) != nullptr)
+    {
+      if(IsDirectory(dp->d_name))
+        contents.emplace_back(dp->d_name);
+    }
+    closedir(dir);
 
-	return contents;
+    return contents;
   }
 
   auto FileSystem::IsFile(const char* path) -> bool
   {
-	struct stat s {};
-	if (stat(path, &s) == 0)
-	  return (s.st_mode & S_IFREG) != 0;
-	return false;
+    struct stat s {};
+    if (stat(path, &s) == 0)
+      return (s.st_mode & S_IFREG) != 0;
+    return false;
   }
 
   auto FileSystem::IsFile(const std::string& path) -> bool
@@ -155,27 +157,27 @@ namespace mobagen
 
   auto FileSystem::IsDirectory(const char* path) -> bool
   {
-	struct stat s{};
-	if (stat(path, &s) == 0)
-	  return (s.st_mode & S_IFDIR) != 0;	
-	return false;
+    struct stat s{};
+    if (stat(path, &s) == 0)
+      return (s.st_mode & S_IFDIR) != 0;
+    return false;
   }
 
   auto FileSystem::IsDirectory(const std::string& path) -> bool
   {
-	return IsDirectory(path.c_str());
+    return IsDirectory(path.c_str());
   }
 
   auto FileSystem::Open(const char* path, const char* mode) -> Assimp::IOStream*
   {
     if(IsFile(path))
-	  return new mobagen::FileCustom(path, mode);
-	return nullptr;
+	    return new mobagen::FileCustom(path, mode);
+    return nullptr;
   }
 
   auto FileSystem::Open(const std::string& path, const char* pMode) -> Assimp::IOStream*
   {
-	return Open(path.c_str(), pMode);
+    return Open(path.c_str(), pMode);
   }
 
   auto FileSystem::Close(Assimp::IOStream *file) -> void

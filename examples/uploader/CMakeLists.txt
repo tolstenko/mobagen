@@ -24,17 +24,6 @@ IF (ANDROID)
     add_custom_command(TARGET uploader POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 ELSE ()
-  IF(NOT EMSCRIPTEN AND USE_CURL)
-    add_executable (uploader main.cpp EditorGUI.cpp EditorGUI.hpp)
-    hunter_add_package(CURL)
-    find_package(CURL CONFIG REQUIRED)
-    target_link_libraries (uploader engine CURL::libcurl)
-    #cotire(uploader)
-    add_custom_command(TARGET uploader PRE_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory
-      ${CMAKE_SOURCE_DIR}/assets
-      $<TARGET_FILE_DIR:uploader>/assets)
-  ELSE()
     add_executable (uploader main.cpp EditorGUI.cpp EditorGUI.hpp)
     target_link_libraries (uploader engine)
     #cotire(uploader)
@@ -42,5 +31,4 @@ ELSE ()
       COMMAND ${CMAKE_COMMAND} -E copy_directory
       ${CMAKE_SOURCE_DIR}/assets
       $<TARGET_FILE_DIR:uploader>/assets)
-  ENDIF()
 ENDIF ()
