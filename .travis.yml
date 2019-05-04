@@ -105,13 +105,13 @@ matrix:
 ##          - sys-img-x86-android-26
 ##          - sys-img-armeabi-v7a-android-17
     # windows mingw
-    - os: windows
+    - os: linux
       language: cpp
       cache:
         directories:
           - /c/Users/travis/.hunter/
       env:
-        - BUILD_TYPE=native
+        - BUILD_TYPE=windows
       script:
         - git submodule update --init --recursive
         - cmd.exe /C "scripts\mingw-build.bat"
