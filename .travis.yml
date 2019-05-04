@@ -116,7 +116,8 @@ matrix:
         - git submodule update --init --recursive
         - cmake --version
         - which cmake
-        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake ; cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake
+        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=`pwd`/dependencies/polly/mingw-cxx17.cmake 2>&1
+        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=`pwd`/dependencies/polly/mingw-cxx17.cmake 2>&1
         - cmake --build build
 
     # linux native
