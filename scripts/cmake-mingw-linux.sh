@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+#C:\msys64\mingw64\bin\cmake.exe -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=C:/msys64/mingw64/bin/mingw32-make.exe -DCMAKE_C_COMPILER=C:/msys64/mingw64/bin/x86_64-w64-mingw32-gcc.exe -DCMAKE_CXX_COMPILER=C:/msys64/mingw64/bin/x86_64-w64-mingw32-g++.exe -DCMAKE_TOOLCHAIN_FILE=/projects/mobagen/dependencies/polly/mingw-cxx17.cmake -G "CodeBlocks - MinGW Makefiles" C:\projects\mobagen
 
 export CC=/usr/bin/x86_64-w64-mingw32-gcc-win32
 export CXX=/usr/bin/x86_64-w64-mingw32-g++-win32

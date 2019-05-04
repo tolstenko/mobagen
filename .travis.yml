@@ -104,7 +104,19 @@ matrix:
 #          # if you need to run emulator(s) during your tests
 ##          - sys-img-x86-android-26
 ##          - sys-img-armeabi-v7a-android-17
-
+    # windows mingw
+    - os: windows
+      language: cpp
+      cache:
+        directories:
+          - /c/Users/travis/.hunter/
+      env:
+        - BUILD_TYPE=native
+      script:
+        - git submodule update --init --recursive
+        - cmake --version
+        - cmake -Bbuild -H. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=%cd%/dependencies/polly/mingw-cxx17.cmake
+        - cmake --build build
 
     # linux native
     - os: linux
