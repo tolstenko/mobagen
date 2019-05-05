@@ -92,7 +92,11 @@ IF(USE_CURL)
   add_definitions(-DUSE_CURL)
 ENDIF()
 
-IF(USE_CURL AND (APPLE OR MINGW))
+if (USE_CURL AND MINGW)
+  find_package(CURL REQUIRED)
+endif ()
+
+IF(USE_CURL AND APPLE)
   find_program (perl_path NAMES perl perl.exe)
   IF (NOT perl_path)
     message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
@@ -100,19 +104,13 @@ IF(USE_CURL AND (APPLE OR MINGW))
     message(STATUS "Perl was found in PATH: ${perl_path}")
   ENDIF()
 
-  IF(APPLE)
-    message(STATUS "######################### ADDING OPENSSL #######################################")
-    hunter_add_package(OpenSSL)
-    find_package(OpenSSL REQUIRED)
+  message(STATUS "######################### ADDING OPENSSL #######################################")
+  hunter_add_package(OpenSSL)
+  find_package(OpenSSL REQUIRED)
 
-    message(STATUS "######################### ADDING CURL #######################################")
-    hunter_add_package(CURL)
-    find_package(CURL CONFIG REQUIRED)
-  ENDIF()
-
-  IF(MINGW)
-    find_package(CURL REQUIRED)
-  ENDIF()
+  message(STATUS "######################### ADDING CURL #######################################")
+  hunter_add_package(CURL)
+  find_package(CURL CONFIG REQUIRED)
 ENDIF()
 
 # zlib support
