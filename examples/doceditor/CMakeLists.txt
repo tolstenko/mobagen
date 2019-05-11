@@ -24,7 +24,7 @@ IF (ANDROID)
     add_custom_command(TARGET doceditor POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 ELSE ()
-    add_executable (doceditor main.cpp EditorGUI.cpp EditorGUI.hpp)
+    add_executable (doceditor main.cpp )
     target_link_libraries (doceditor engine)
 
     add_custom_command(TARGET doceditor PRE_BUILD

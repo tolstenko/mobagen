@@ -13,13 +13,13 @@ void Menu::update(Input *input, std::chrono::microseconds delta)
 
 void Menu::onGUI(ImGuiContext* context)
 {
-	ImGui::SetCurrentContext(context);
+	//ImGui::SetCurrentContext(context);
 
 	if (m_remainingTime > 0)
 	{
 		ImVec2 pos = ImVec2(50,50);
 		ImGui::SetNextWindowPos(pos);
-		ImGui::Begin("", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+		ImGui::Begin("teste", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
 			ImGuiWindowFlags_NoCollapse |
 			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
 		ImGui::Text("TIME LEFT");

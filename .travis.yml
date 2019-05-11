@@ -150,8 +150,8 @@ matrix:
       compiler: emscripten
       install:
         - cmake --version
-        - ./dependencies/emsdk/emsdk install sdk-1.38.12-64bit
-        - ./dependencies/emsdk/emsdk activate sdk-1.38.12-64bit
+        - ./dependencies/emsdk/emsdk install sdk-1.38.21-64bit
+        - ./dependencies/emsdk/emsdk activate sdk-1.38.21-64bit
       script:
         - ./scripts/travis-build.sh
         - ./scripts/travis-build.sh
