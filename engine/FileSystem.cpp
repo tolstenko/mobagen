@@ -1,5 +1,9 @@
 #include "FileSystem.hpp"
+
+#include <assimp/IOSystem.hpp>
+
 #include "FileCustom.hpp"
+#include "Logger.hpp"
 
 
 #if !defined(_WIN32) && !defined(_WIN64) && (defined(__unix__) || defined(__unix) || (defined(__APPLE__) && defined(__MACH__)))
@@ -16,65 +20,168 @@
 #include "direntwin.h"
 #endif
 
-namespace mobagen {
-  FileSystem::FileSystem(void) {}
-
-  FileSystem::~FileSystem(void) {}
-
-  bool FileSystem::ComparePaths(const char *one, const char *second) const {
-    return strcmp(one, second) == 0;
+namespace mobagen
+{
+  auto FileSystem::Exists(const char* path) -> bool
+  {
+    struct stat s {};
+    if (stat(path, &s) == 0)
+    {
+	    if (s.st_mode & S_IFDIR)
+		    return true; // dir
+	    else if (s.st_mode & S_IFREG)
+		    return true; // file
+	    else
+		    return false; //something else
+	  }
+    else
+      return false;
   }
 
-  bool FileSystem::Exists(const char *pFile) const {
-#ifndef ANDROID
-    // TODO: FIX THIS IN WINDOWS
-    //if(access(("../assets/" + std::string(pFile)).c_str(), F_OK) != -1) {
-    //  return true;
-    //} else {
-    //  return false;
-    //}
-    return true;
+  auto FileSystem::Exists(std::string path) -> bool
+  {
+    return Exists(path.c_str());
+  }
+
+  auto FileSystem::ComparePaths(const char* one, const char* second) -> bool
+  {
+	return strcmp(one, second) == 0;
+  }
+
+  auto FileSystem::ComparePaths(const std::string& one, const std::string& second) -> bool
+  {
+	  return one == second;
+  }
+
+  auto FileSystem::PathSeparator() -> char
+  {
+#if defined(__MINGW64__) || defined(__MINGW32__)
+      return '/';
+#elif defined(_WIN32) || defined(_WIN64)
+	  return '\\';
 #else
-    return true;
+	  return '/';
 #endif
   }
 
-  char FileSystem::getOsSeparator(void) const {
-    return '/';
+  auto FileSystem::ListDirectory(const std::string& path) -> std::vector<std::string>
+  {
+	  return ListDirectory(path.c_str());
   }
 
-  Assimp::IOStream *FileSystem::Open(const char *pFile, const char *pMode) {
-    return new FileCustom(pFile, pMode);
-  }
-
-  void FileSystem::Close(Assimp::IOStream *pFile) {
-    delete pFile;
-  }
-
-  std::vector<std::string> FileSystem::ListDirectory(std::string path) {
+  auto FileSystem::ListDirectory(const char* path) -> std::vector<std::string>
+  {
     std::vector<std::string> contents;
 
-    DIR* dirp = opendir(path.c_str());
+    if(!IsDirectory(path))
+    {
+      log_err("Path is not a directory: %s", path);
+      return contents;
+    }
+
+    const auto dir = opendir(path);
     struct dirent * dp;
-    while ((dp = readdir(dirp)) != NULL)
-      contents.push_back(dp->d_name);
-    closedir(dirp);
+    while ((dp = readdir(dir)) != nullptr)
+      contents.emplace_back(dp->d_name);
+    closedir(dir);
 
     return contents;
   }
 
-  bool FileSystem::IsDirectory(std::string path) {
-    struct stat s;
-    if( stat(path.c_str(),&s) == 0 )
+  auto FileSystem::ListDirectoryFiles(const std::string& path) -> std::vector<std::string>
+  {
+    return ListDirectoryFiles(path.c_str());
+  }
+
+  auto FileSystem::ListDirectoryFiles(const char* path) -> std::vector<std::string>
+  {
+    std::vector<std::string> contents;
+
+    if (!IsDirectory(path))
     {
-      if( s.st_mode & S_IFDIR )
-        return true; // dir
-//      else if( s.st_mode & S_IFREG )
-//        return false; // file
-      else
-        return false; //something else
+      log_err("Path is not a directory: %s", path);
+      return contents;
     }
-    else
-      return false;
+
+    const auto dir = opendir(path);
+    struct dirent * dp;
+    while ((dp = readdir(dir)) != nullptr)
+    {
+      if(IsFile(dp->d_name))
+        contents.emplace_back(dp->d_name);
+    }
+  	closedir(dir);
+
+    return contents;
+  }
+
+  auto FileSystem::ListDirectoryFolders(const std::string& path) -> std::vector<std::string>
+  {
+	  return ListDirectoryFolders(path.c_str());
+  }
+
+  auto FileSystem::ListDirectoryFolders(const char* path) -> std::vector<std::string>
+  {
+    std::vector<std::string> contents;
+
+    if (!IsDirectory(path))
+    {
+      log_err("Path is not a directory: %s", path);
+      return contents;
+    }
+
+    const auto dir = opendir(path);
+    struct dirent * dp;
+    while ((dp = readdir(dir)) != nullptr)
+    {
+      if(IsDirectory(dp->d_name))
+        contents.emplace_back(dp->d_name);
+    }
+    closedir(dir);
+
+    return contents;
+  }
+
+  auto FileSystem::IsFile(const char* path) -> bool
+  {
+    struct stat s {};
+    if (stat(path, &s) == 0)
+      return (s.st_mode & S_IFREG) != 0;
+    return false;
+  }
+
+  auto FileSystem::IsFile(const std::string& path) -> bool
+  {
+    return IsFile(path.c_str());
+  }
+
+  auto FileSystem::IsDirectory(const char* path) -> bool
+  {
+    struct stat s{};
+    if (stat(path, &s) == 0)
+      return (s.st_mode & S_IFDIR) != 0;
+    return false;
+  }
+
+  auto FileSystem::IsDirectory(const std::string& path) -> bool
+  {
+    return IsDirectory(path.c_str());
+  }
+
+  auto FileSystem::Open(const char* path, const char* mode) -> Assimp::IOStream*
+  {
+    if(IsFile(path))
+	    return new mobagen::FileCustom(path, mode);
+    return nullptr;
+  }
+
+  auto FileSystem::Open(const std::string& path, const char* pMode) -> Assimp::IOStream*
+  {
+    return Open(path.c_str(), pMode);
+  }
+
+  auto FileSystem::Close(Assimp::IOStream *file) -> void
+  {
+    delete file;
   }
 }

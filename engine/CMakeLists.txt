@@ -29,6 +29,7 @@ If(NOT EMSCRIPTEN AND NOT ANDROID)
   set( glew-cmake_BUILD_SINGLE_CONTEXT ON CACHE BOOL "Build the single context glew library" )
   set( glew-cmake_BUILD_MULTI_CONTEXT OFF CACHE BOOL "Build the multi context glew library" )
 
+  message(STATUS "######################### ADDING GLEW #######################################")
   hunter_add_package(glew)
   find_package(glew CONFIG REQUIRED)
 
