@@ -1,19 +1,16 @@
 #include "File.hpp"
-#include "FileSystem.hpp"
 
 namespace mobagen {
   File::File(const std::string &fileName) {
     m_fileName = fileName;
 
-    if(m_fileName.find(std::string("assets")+FileSystem::PathSeparator())==0)
-      m_fileName.erase(0,7);
-
 #ifdef ANDROID
-    m_file = AAssetManager_open(AndroidAssetManager::getAssetManager(), m_fileName.c_str(), AASSET_MODE_UNKNOWN);
+    m_file = AAssetManager_open(AndroidAssetManager::getAssetManager(), fileName.c_str(), AASSET_MODE_UNKNOWN);
 #elif EMSCRIPTEN
-    m_file = new std::fstream(ASSET_DIR + m_fileName, std::ifstream::binary | std::fstream::in | std::fstream::out);
+    m_file = new std::fstream(ASSET_DIR + fileName, std::ifstream::binary | std::fstream::in | std::fstream::out);
 #else
-	m_file = new std::fstream((std::string("assets") + FileSystem::PathSeparator() + m_fileName).c_str(), std::ifstream::binary | std::fstream::in | std::fstream::out);
+	m_file = new std::fstream((std::string("assets/") + fileName).c_str(),
+		std::ifstream::binary | std::fstream::in | std::fstream::out);
 #endif
   }
 

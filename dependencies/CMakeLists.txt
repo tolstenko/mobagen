@@ -185,6 +185,9 @@ add_definitions(-DASSIMP_BUILD_NO_3MF_EXPORTER)
 
 add_subdirectory( assimp )
 
+#set(IMGUI_USE_MINIZIP OFF CACHE BOOL "IMGUI_USE_MINIZIP")
+#add_definitions(-DYES_IMGUIADDONS_ALL)
+
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/imgui/ )
 
 add_library (imgui STATIC
@@ -192,11 +195,29 @@ add_library (imgui STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_demo.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_draw.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_internal.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
 )
 
-IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip)
-  file(DOWNLOAD https://curl.haxx.se/windows/dl-7.64.1_1/curl-7.64.1_1-win64-mingw.zip ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip EXPECTED_HASH SHA256=c729be88bf139f43fe56aa196058f72ed344dc000877afae33b95cf51c2fb8f8)
-  execute_process( COMMAND "${CMAKE_COMMAND} -E tar xfz curl.zip")
-ENDIF()
+#execute_process( COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/openssl/config no-shared no-engine no-hw no-dso --prefix=${CMAKE_BINARY_DIR} )
+#execute_process( COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl depend && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl && make -C ${CMAKE_CURRENT_SOURCE_DIR}/openssl install_sw )
+
+#include(ExternalProject)
+#ExternalProject_Add(
+#    openssl
+#    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/openssl"
+#    CONFIGURE_COMMAND ${CMAKE_SOURCE_DIR}/dependencies/openssl/config no-shared no-engine no-hw no-dso --prefix=${CMAKE_BINARY_DIR}
+#    BUILD_COMMAND make depend && make
+#    INSTALL_COMMAND make install_sw
+#    BUILD_IN_SOURCE 1
+#)
+
+#include(${CP_CMAKE_DIR}/HunterGate.cmake)
+#hunter_add_package(OpenSSL)
+#find_package(OpenSSL REQUIRED)
+#target_link_libraries(foo PUBLIC OpenSSL::SSL OpenSSL::Crypto)
+
+
+
+#
+#set( OPENSSL_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/openssl/ CACHE PATH "OPENSSL_ROOT_DIR" )
+#set( OPENSSL_LIBRARIES ${CMAKE_BINARY_DIR}/lib/ CACHE PATH "OPENSSL_LIBRARIES" )
+
