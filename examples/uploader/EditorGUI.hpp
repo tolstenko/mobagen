@@ -15,6 +15,9 @@ public:
   void deregisterFromEngine(Engine* engine) override {};
   void onGUI(ImGuiContext* context) override;
 
+
+
+
   std::shared_ptr<Texture> normalTexture;
   std::shared_ptr<Texture> specularTexture;
 

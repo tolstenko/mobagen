@@ -6,8 +6,7 @@
 
 namespace mobagen {
   class FileCustom : public Assimp::IOStream {
-    friend class FileSystemHelper;
-	friend class FileSystem;
+    friend class FileSystem;
 
   protected:
     // Constructor protected for private usage by CustomIOSystem

@@ -40,5 +40,3 @@ build-emscripten/
 \.idea/
 
 CMakeLists\.txt\.user
-
-dependencies/curl\.zip

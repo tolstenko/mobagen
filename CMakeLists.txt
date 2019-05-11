@@ -1,34 +1,15 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.12.4)
 
-MESSAGE(STATUS "MSYS=${MSYS}")
-MESSAGE(STATUS "CYGWIN=${CYGWIN}")
-MESSAGE(STATUS "MINGW=${MINGW}")
-MESSAGE(STATUS "WIN32=${WIN32}")
+find_program(LSB_RELEASE_EXEC lsb_release) 
+if(LSB_RELEASE_EXEC) 
+  execute_process(COMMAND ${LSB_RELEASE_EXEC} -is 
+    OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT 
+    OUTPUT_STRIP_TRAILING_WHITESPACE 
+  ) 
+  IF(LSB_RELEASE_ID_SHORT) 
+    message(STATUS "ubuntu detected") 
 
-#CHECK MINGW
-IF(NOT DEFINED MINGW)
-  SET(MINGW OFF)
-ENDIF()
-IF("${CMAKE_GENERATOR}" MATCHES "(M|m?)in(G|g?)(W|w?)")
-  SET(MINGW ON)
-  MESSAGE(STATUS "MinGW Detected")
-ENDIF()
-
-# CHECK OR APPLE MACHINE
-IF(NOT DEFINED APPLE)
-  set(APPLE OFF)
-  MESSAGE(STATUS "NOT APPLE MACHINE")
-ENDIF()
-
-find_program(LSB_RELEASE_EXEC lsb_release)
-if(LSB_RELEASE_EXEC)
-  execute_process(COMMAND ${LSB_RELEASE_EXEC} -is
-          OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
-          OUTPUT_STRIP_TRAILING_WHITESPACE
-          )
-  IF(LSB_RELEASE_ID_SHORT)
-    message(STATUS "ubuntu detected")
-  ENDIF()
+  ENDIF() 
 ENDIF()
 
 set (HUNTER_SKIP_LOCK ON CACHE BOOL "HUNTER_SKIP_LOCK")
@@ -38,7 +19,7 @@ HunterGate(
     URL "https://github.com/ruslo/hunter/archive/v0.23.146.tar.gz"
     SHA1 "06f44e121e5ac61c8571203ba47ce0b31187d985"
 )
-project(Engine)
+project (Engine)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
@@ -46,90 +27,64 @@ set(ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE STRING "Root dir")
 set(CP_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
 include(${CP_CMAKE_DIR}/macros.cmake)
 
-# read build configs
 IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/buildconfig.txt")
   message(FATAL_ERROR "The file buildconfig.txt must exists to load build configurations from it.")
 ENDIF()
 
+#if you want to always use what is write on buildconfig, you must to unset the variable cache
+#unset(USE_BULLET CACHE)
+
 IF(NOT DEFINED ${USE_BULLET})
   readSettingFile("USE_BULLET=" "ON" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_BULLET ON)
-  else()
-    set(USE_BULLET OFF)
-  endif()
+  set( USE_BULLET "${STRING_RESULT}" CACHE BOOL "USE BULLET?" )
   message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
 ENDIF()
 
 IF(NOT DEFINED ${USE_GDCM})
   readSettingFile("USE_GDCM=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${USE_GDCM}" "ON" is_equal)
-  if(is_equal)
-    set(USE_GDCM ON)
-  else()
-    set(USE_GDCM OFF)
-  endif()
+  set( USE_GDCM "${STRING_RESULT}" CACHE BOOL "USE GDCM?" )
   message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
 ENDIF()
 
 IF(NOT DEFINED ${USE_CURL})
   readSettingFile("USE_CURL=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_CURL ON)
-  else()
-    set(USE_CURL OFF)
-  endif()
+  set( USE_CURL "${STRING_RESULT}" CACHE BOOL "USE CURL?" )
   message(STATUS "USE_CURL from config file: ${USE_CURL}")
 ENDIF()
 
-IF(APPLE)
-  add_definitions(-DAPPLE)
+# download boost
+#hunter_add_package(Boost COMPONENTS system filesystem)
+
+# now boost can be used
+#find_package(Boost CONFIG REQUIRED system filesystem)
+
+IF(${USE_BULLET})
+  hunter_add_package(bullet)
+  find_package(bullet CONFIG REQUIRED)
 ENDIF()
 
-IF(USE_CURL)
-  add_definitions(-DUSE_CURL)
-ENDIF()
-
-IF(USE_CURL AND (APPLE OR MINGW))
+IF(${USE_CURL})
   find_program (perl_path NAMES perl perl.exe)
   IF (NOT perl_path)
     message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
   ELSE()
     message(STATUS "Perl was found in PATH: ${perl_path}")
   ENDIF()
-
-  IF(APPLE)
-    message(STATUS "######################### ADDING OPENSSL #######################################")
-    hunter_add_package(OpenSSL)
-    find_package(OpenSSL REQUIRED)
-
-    message(STATUS "######################### ADDING CURL #######################################")
-    hunter_add_package(CURL)
-    find_package(CURL CONFIG REQUIRED)
-  ENDIF()
-
-  IF(MINGW)
-    find_package(CURL REQUIRED)
-  ENDIF()
 ENDIF()
 
 # zlib support
-message(STATUS "######################### ADDING ZLIB #######################################")
 hunter_add_package(ZLIB)
 find_package(ZLIB CONFIG REQUIRED)
 
-IF(USE_BULLET)
-  message(STATUS "######################### ADDING BULLET #######################################")
-  hunter_add_package(bullet)
-  find_package(bullet CONFIG REQUIRED)
+IF (NOT EMSCRIPTEN AND ${USE_CURL})
+  set(LIBC ON CACHE BOOL "LIBC")
+  hunter_add_package(cpr)
+  find_package(cpr CONFIG REQUIRED)
+  hunter_add_package(CURL)
+  find_package(CURL CONFIG REQUIRED)
 ENDIF()
 
-set(LIBC ON CACHE BOOL "LIBC")
-
-IF(NOT EMSCRIPTEN)
-  message(STATUS "######################### ADDING SDL2 #######################################")
+IF (NOT EMSCRIPTEN)
   hunter_add_package(SDL2)
   find_package(SDL2 CONFIG REQUIRED)
 ENDIF()
@@ -140,13 +95,15 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(cotire)
+
 set(BUILD_STATIC_LIBS TRUE)
 set(BUILD_SHARED_LIBS FALSE)
 
-IF(ANDROID)
+IF (ANDROID)
   include(${CP_CMAKE_DIR}/android.cmake)
   add_definitions(-DSDL_JOYSTICK=0) # to avoid bugs with android + joystick
-ENDIF ()
+ENDIF () 
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -162,22 +119,22 @@ add_subdirectory(dependencies)
 if(USE_GDCM)
   include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
   SET(GDCM_LIBRARIES
-          gdcmCommon
-          gdcmDICT
-          gdcmDSED
-          gdcmIOD
-          gdcmMSFF
-          gdcmMEXD
-          gdcmjpeg8
-          gdcmjpeg12
-          gdcmjpeg16
-          gdcmexpat
-          gdcmopenjp2
-          gdcmcharls
-          gdcmzlib
-          #gdcmuuid
-          socketxx
-          )
+    gdcmCommon
+    gdcmDICT
+    gdcmDSED
+    gdcmIOD
+    gdcmMSFF
+    gdcmMEXD
+    gdcmjpeg8
+    gdcmjpeg12
+    gdcmjpeg16
+    gdcmexpat
+    gdcmopenjp2
+    gdcmcharls
+    gdcmzlib
+    #gdcmuuid
+    socketxx
+  )
 endif()
 
 set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
@@ -186,33 +143,31 @@ set ( ASSIMP_LIBRARY assimp )
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
 set ( IMGUI_INCLUDE_DIRS
-  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/
-  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/addons
-  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/addons/imguifilesystem)
+  ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/imgui/)
 
 set ( IMGUI_LIBRARY imgui )
 
 IF (EMSCRIPTEN)
   #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/Engine/example/assets/ -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -s TOTAL_MEMORY=536870912 -s USE_SDL=2 -std=c++14 -Oz")
-  #SET(CMAKE_CXX_FLAGS "--closure 1 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -Oz ")
-  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2")
+  SET(CMAKE_CXX_FLAGS "--closure 1 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s TOTAL_MEMORY=536870912 -s USE_SDL=2 -Oz")
   add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
+  # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
-          ${ASSIMP_LIBRARY}
-          ${IMGUI_LIBRARY}
-          ${GDCM_LIBRARIES}
-          )
+    ${ASSIMP_LIBRARY}
+    ${IMGUI_LIBRARY}
+    ${GDCM_LIBRARIES}
+  )
 
   set(ENGINE_INCLUDES
-          ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
-          ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
-          ${IMGUI_INCLUDE_DIRS}
-          ${CMAKE_CURRENT_SOURCE_DIR}/engine/
-          ${GDCM_INCLUDE_DIRS}
-          )
+    ${GLM_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIR}
+    ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
+    ${IMGUI_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/
+    ${GDCM_INCLUDE_DIRS}
+  )
 
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/index.html ${CMAKE_BINARY_DIR}/bin/index.html COPYONLY)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/midasminer.html ${CMAKE_BINARY_DIR}/bin/midasminer.html COPYONLY)
@@ -221,79 +176,80 @@ IF (EMSCRIPTEN)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/uploader.html ${CMAKE_BINARY_DIR}/bin/uploader.html COPYONLY)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/html/startpage.html ${CMAKE_BINARY_DIR}/bin/startpage.html COPYONLY)
 
-ELSEIF(ANDROID)
+ELSEIF (ANDROID)
   add_definitions( -DGLES2=1 )
 
+  # CHECK FOR CURL AND GDCM
   set(ENGINE_LIBS
-          SDL2::SDL2
-          SDL2::SDL2main
-          ${ASSIMP_LIBRARY}
-          ${IMGUI_LIBRARY}
-          ${GDCM_LIBRARIES}
-          )
+    SDL2::SDL2
+    ${ASSIMP_LIBRARY}
+    ${IMGUI_LIBRARY}
+    ${GDCM_LIBRARIES}
+  )
 
   set(ENGINE_INCLUDES
-          ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
-          ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
-          ${IMGUI_INCLUDE_DIRS}
-          ${CMAKE_CURRENT_SOURCE_DIR}/engine/
-          ${GDCM_INCLUDE_DIRS}
-          )
+    ${GLM_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIR}
+    ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
+    ${IMGUI_INCLUDE_DIRS}
+    ${CMAKE_CURRENT_SOURCE_DIR}/engine/
+    ${GDCM_INCLUDE_DIRS}
+  )
 ELSE ()
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -fPIC")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -fPIC")
   find_package(OpenGL REQUIRED)
 
   set(ENGINE_LIBS
-          SDL2::SDL2
-          SDL2::SDL2main
-          ${OPENGL_LIBRARY}
-          ${ASSIMP_LIBRARY}
-          ${IMGUI_LIBRARY}
-          )
+    SDL2::SDL2
+    ${OPENGL_LIBRARY}
+    ${ASSIMP_LIBRARY}
+    ${IMGUI_LIBRARY}
+  )
   set(ENGINE_INCLUDES
-          ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
-          ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
-          ${IMGUI_INCLUDE_DIRS}
-          ${CMAKE_CURRENT_SOURCE_DIR}/engine/
-          )
+      ${GLM_INCLUDE_DIRS}
+      ${ASSIMP_INCLUDE_DIR}
+      ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+      ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
+      ${IMGUI_INCLUDE_DIRS}
+      ${CMAKE_CURRENT_SOURCE_DIR}/engine/
+    )
 
+  IF(USE_CURL)
+    SET(ENGINE_LIBS
+      ${ENGINE_LIBS}
+      cpr::cpr
+    ) 
+  ENDIF()
+  
   IF(USE_GDCM)
     SET(ENGINE_LIBS
-            ${ENGINE_LIBS}
-            ${GDCM_LIBRARIES}
-            )
-    SET(ENGINE_INCLUDES
-            ${ENGINE_INCLUDES}
-            ${GDCM_INCLUDE_DIRS}
-            )
+      ${ENGINE_LIBS}
+	  ${GDCM_LIBRARIES}
+    )
+	SET(ENGINE_INCLUDES
+      ${ENGINE_INCLUDES}
+	  ${GDCM_INCLUDE_DIRS}
+    )
   ENDIF()
 ENDIF()
 
 IF(USE_BULLET)
   SET(ENGINE_LIBS
-          ${ENGINE_LIBS}
-          bullet::BulletCollision
-          bullet::BulletDynamics
-          bullet::BulletSoftBody
-          bullet::LinearMath
-          )
+    ${ENGINE_LIBS}
+    bullet::BulletCollision
+    bullet::BulletDynamics
+    bullet::BulletSoftBody
+    bullet::LinearMath
+  )
 ENDIF()
 
-SET(ENGINE_LIBS ${ENGINE_LIBS} ZLIB::zlib)
-
-IF(USE_CURL AND MINGW)
-  SET(ENGINE_INCLUDES ${ENGINE_INCLUDES} ${CURL_INCLUDE_DIR})
-  SET(ENGINE_LIBS ${ENGINE_LIBS} ${CURL_LIBRARIES})
-ENDIF()
-
-IF(USE_CURL AND APPLE)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
-ENDIF()
+SET(ENGINE_LIBS
+    ${ENGINE_LIBS}
+    ZLIB::zlib
+#    c++experimental
+)
 
 include_directories(${ENGINE_INCLUDES})
 
@@ -306,3 +262,5 @@ IF (NOT ANDROID)
     add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/tests )
   ENDIF ()
 ENDIF ()
+
+
