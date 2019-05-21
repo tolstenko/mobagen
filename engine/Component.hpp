@@ -15,11 +15,11 @@ namespace mobagen {
   class Engine;
 
   enum PropertyType {
-    FLOAT,
-    FLOAT3,
-    BOOLEAN,
-    ANGLE,
-    COLOR
+    FLOATPROPERTY,
+    FLOAT3PROPERTY,
+    BOOLEANPROPERTY,
+    ANGLEPROPERTY,
+    COLORPROPERTY
   };
 
   struct Property {

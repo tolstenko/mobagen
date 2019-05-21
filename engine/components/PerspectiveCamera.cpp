@@ -10,10 +10,10 @@ namespace mobagen {
     m_zNear = zNear;
     m_zFar = zFar;
 
-    setProperty("fov", ANGLE, &m_fov, 0, 180);
-    setProperty("aspect", FLOAT, &m_aspect, 0, 10);
-    setProperty("zNear", FLOAT, &m_zNear, 0, 1);
-    setProperty("zFar", FLOAT, &m_zFar, 0, 1000);
+    setProperty("fov", ANGLEPROPERTY, &m_fov, 0, 180);
+    setProperty("aspect", FLOATPROPERTY, &m_aspect, 0, 10);
+    setProperty("zNear", FLOATPROPERTY, &m_zNear, 0, 1);
+    setProperty("zFar", FLOATPROPERTY, &m_zFar, 0, 1000);
   }
 
   glm::mat4 PerspectiveCamera::getProjectionMatrix(void) const {
