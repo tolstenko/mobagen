@@ -319,19 +319,19 @@ namespace mobagen {
         ImGui::PushItemWidth(-1);
 
         switch (property.second.type) {
-          case FLOAT:
+          case FLOATPROPERTY:
             ImGui::SliderFloat("##value", (float *) property.second.p, property.second.min, property.second.max);
             break;
-          case FLOAT3:
+          case FLOAT3PROPERTY:
             ImGui::SliderFloat3("##value", (float *) property.second.p, property.second.min, property.second.max);
             break;
-          case BOOLEAN:
+          case BOOLEANPROPERTY:
             ImGui::Checkbox("##value", (bool *) property.second.p);
             break;
-          case COLOR:
+          case COLORPROPERTY:
             ImGui::ColorEdit3("##value", (float *) property.second.p);
             break;
-          case ANGLE:
+          case ANGLEPROPERTY:
             ImGui::SliderAngle("##value", (float *) property.second.p, property.second.min, property.second.max);
             break;
         }

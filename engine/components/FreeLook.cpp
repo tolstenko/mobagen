@@ -6,8 +6,8 @@ namespace mobagen {
     m_speed = speed;
     m_look = false;
 
-    setProperty("speed", FLOAT, &m_speed, 0, 5);
-    setProperty("look", BOOLEAN, &m_look);
+    setProperty("speed", FLOATPROPERTY, &m_speed, 0, 5);
+    setProperty("look", BOOLEANPROPERTY, &m_look);
   }
 
   FreeLook::~FreeLook(void) {

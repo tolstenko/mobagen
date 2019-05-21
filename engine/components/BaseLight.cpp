@@ -5,8 +5,8 @@ namespace mobagen {
     m_color = color;
     m_intensity = intensity;
 
-    setProperty("color", COLOR, &m_color.x, 0, 1);
-    setProperty("intensity", FLOAT, &m_intensity, 0, 100);
+    setProperty("color", COLORPROPERTY, &m_color.x, 0, 1);
+    setProperty("intensity", FLOATPROPERTY, &m_intensity, 0, 100);
   }
 
   BaseLight::~BaseLight(void) {
