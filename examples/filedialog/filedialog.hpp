@@ -2,6 +2,10 @@
 #include "Engine.hpp"
 #include "Texture.hpp"
 #include "FileSystem.h"
+//#include <stdint.h>
+//#include <stdio.h>
+//#include <limits.h>
+
 using namespace mobagen;
 
 class FileDialogGUI : public Component
@@ -15,9 +19,6 @@ public:
 	void registerWithEngine(Engine* engine) override {};
 	void deregisterFromEngine(Engine* engine) override {};
 	void onGUI(ImGuiContext* context) override;
-
-
-
 
 	std::shared_ptr<Texture> normalTexture;
 	std::shared_ptr<Texture> specularTexture;
