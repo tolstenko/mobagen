@@ -7,6 +7,18 @@
 #include <string>
 #include <map>
 
+#if defined(__MINGW64__)
+#define WINDOWS_LEAN_AND_MEAN
+#include <winsock2.h>
+#endif
+
+#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
+#include <cstdint>
+#include <curl/curl.h>
+#include "DownloadHandler.hpp"
+#endif
+
+// TODO: move this to network namespace
 namespace mobagen {
   enum class WebErrorCode {
     OK = 0,

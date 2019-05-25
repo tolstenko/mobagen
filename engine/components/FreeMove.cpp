@@ -11,11 +11,11 @@ namespace mobagen {
     m_forwardsVelocity = 0;
     m_strafeVelocity = 0;
 
-    setProperty("speed", FLOAT, &m_speed, 0, 20);
-    setProperty("forwards velocity", FLOAT, &m_forwardsVelocity, -1, 1);
-    setProperty("strafe velocity", FLOAT, &m_strafeVelocity, -1, 1);
-    setProperty("forwards", BOOLEAN, &m_moveForwards);
-    setProperty("sprinting", BOOLEAN, &m_sprinting);
+    setProperty("speed", FLOATPROPERTY, &m_speed, 0, 20);
+    setProperty("forwards velocity", FLOATPROPERTY, &m_forwardsVelocity, -1, 1);
+    setProperty("strafe velocity", FLOATPROPERTY, &m_strafeVelocity, -1, 1);
+    setProperty("forwards", BOOLEANPROPERTY, &m_moveForwards);
+    setProperty("sprinting", BOOLEANPROPERTY, &m_sprinting);
   }
 
   FreeMove::~FreeMove(void) {
