@@ -166,7 +166,7 @@ message(STATUS "######################### ADDING ASSIMP ########################
 hunter_add_package(Assimp)
 find_package(Assimp CONFIG REQUIRED)
 
-if(USE_GDCM)
+
   include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
   SET(GDCM_LIBRARIES
           gdcmCommon
@@ -185,7 +185,6 @@ if(USE_GDCM)
           #gdcmuuid
           socketxx
           )
-endif()
 
 #set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
 #set ( ASSIMP_LIBRARY assimp )
