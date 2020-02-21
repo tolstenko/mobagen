@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.15.3)
 
 MESSAGE(STATUS "MSYS=${MSYS}")
 MESSAGE(STATUS "CYGWIN=${CYGWIN}")
@@ -48,42 +48,15 @@ set(CP_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
 include(${CP_CMAKE_DIR}/macros.cmake)
 
 # read build configs
-IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/buildconfig.txt")
-  message(FATAL_ERROR "The file buildconfig.txt must exists to load build configurations from it.")
+IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/buildconfig.mk")
+  message(FATAL_ERROR "The file buildconfig.mk must exists to load build configurations from it.")
 ENDIF()
 
-IF(NOT DEFINED ${USE_BULLET})
-  readSettingFile("USE_BULLET=" "ON" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_BULLET ON)
-  else()
-    set(USE_BULLET OFF)
-  endif()
-  message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
-ENDIF()
+ReadVariables(buildconfig.mk)
 
-IF(NOT DEFINED ${USE_GDCM})
-  readSettingFile("USE_GDCM=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${USE_GDCM}" "ON" is_equal)
-  if(is_equal)
-    set(USE_GDCM ON)
-  else()
-    set(USE_GDCM OFF)
-  endif()
-  message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
-ENDIF()
-
-IF(NOT DEFINED ${USE_CURL})
-  readSettingFile("USE_CURL=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_CURL ON)
-  else()
-    set(USE_CURL OFF)
-  endif()
-  message(STATUS "USE_CURL from config file: ${USE_CURL}")
-ENDIF()
+message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
+message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
+message(STATUS "USE_CURL from config file: ${USE_CURL}")
 
 IF(APPLE)
   add_definitions(-DAPPLE)
@@ -166,8 +139,13 @@ message(STATUS "######################### ADDING ASSIMP ########################
 hunter_add_package(Assimp)
 find_package(Assimp CONFIG REQUIRED)
 
+IF(USE_GDCM)
+  message(STATUS "######################### ADDING GDCM #######################################")
+  if(POLICY CMP0024)
+    cmake_policy(SET CMP0024 OLD)
+  endif()
+  find_package( GDCM REQUIRED PATHS ${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/ )
 
-  include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
   SET(GDCM_LIBRARIES
           gdcmCommon
           gdcmDICT
@@ -185,6 +163,7 @@ find_package(Assimp CONFIG REQUIRED)
           #gdcmuuid
           socketxx
           )
+ENDIF()
 
 #set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
 #set ( ASSIMP_LIBRARY assimp )
