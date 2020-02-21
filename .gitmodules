@@ -1,23 +1,18 @@
 [submodule "dependencies/glm"]
 	path = dependencies/glm
 	url = https://github.com/g-truc/glm.git
-	branch = 09241ec000060fd3d085a11d608eb7909e004c75
 [submodule "dependencies/imgui"]
 	path = dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
-	branch = 78b28d545f79c5c5ed3e0ebae4099e44bdc6c5a6
 [submodule "dependencies/gdcm"]
 	path = dependencies/gdcm
 	url = https://github.com/malaterre/GDCM.git
-	branch = af81d4448a4c5159a9b0bbb67e7b4fd7f9121c7d
 [submodule "dependencies/stb"]
 	path = dependencies/stb
 	url = https://github.com/nothings/stb.git
-	branch = e6afb9cbae4064da8c3e69af3ff5c4629579c1d2
 [submodule "dependencies/polly"]
 	path = dependencies/polly
 	url = https://github.com/ruslo/polly.git
-	branch = dabca59456de58f2c1dd8acdb66c98f8d632859f
 [submodule "dependencies/emsdk"]
 	path = dependencies/emsdk
 	url = https://github.com/juj/emsdk.git
