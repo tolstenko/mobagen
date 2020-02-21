@@ -104,7 +104,17 @@ matrix:
 #          # if you need to run emulator(s) during your tests
 ##          - sys-img-x86-android-26
 ##          - sys-img-armeabi-v7a-android-17
-
+    # windows mingw
+    - os: linux
+      language: cpp
+      cache:
+        directories:
+          - /c/Users/travis/.hunter/
+      env:
+        - BUILD_TYPE=windows
+      script:
+        - git submodule update --init --recursive
+        - cmd.exe /C "scripts\mingw-build.bat"
 
     # linux native
     - os: linux

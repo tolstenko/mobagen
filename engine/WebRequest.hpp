@@ -3,13 +3,14 @@
 #include <map>
 #include <memory>
 
+// TODO: remove this
 #if defined(__MINGW64__)
 #define WINDOWS_LEAN_AND_MEAN
 #include <winsock2.h>
 #endif
 
 #if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-#include <cstdint>
+#include <cstdint> // TODO: remove this line
 #include <curl/curl.h>
 #include "DownloadHandler.hpp"
 #endif
