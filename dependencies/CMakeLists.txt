@@ -1,9 +1,9 @@
 execute_process( COMMAND git submodule update --init --recursive )
 set_directory_properties( PROPERTIES CLEAN_NO_CUSTOM 1)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE CACHE BOOL "bla")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE CACHE BOOL "CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS")
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "bla")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
 
 # set opengl only rendering
 set(DIRECTX OFF CACHE BOOL "use directx")
@@ -196,7 +196,7 @@ add_library (imgui STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
 )
 
-IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip)
-  file(DOWNLOAD https://curl.haxx.se/windows/dl-7.64.1_1/curl-7.64.1_1-win64-mingw.zip ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip EXPECTED_HASH SHA256=c729be88bf139f43fe56aa196058f72ed344dc000877afae33b95cf51c2fb8f8)
-  execute_process( COMMAND "${CMAKE_COMMAND} -E tar xfz curl.zip")
-ENDIF()
+#IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip)
+#  file(DOWNLOAD https://curl.haxx.se/windows/dl-7.64.1_1/curl-7.64.1_1-win64-mingw.zip ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip EXPECTED_HASH SHA256=c729be88bf139f43fe56aa196058f72ed344dc000877afae33b95cf51c2fb8f8)
+#  execute_process( COMMAND "${CMAKE_COMMAND} -E tar -xfz curl.zip")
+#ENDIF()
