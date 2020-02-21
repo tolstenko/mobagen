@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.16.0)
 
 MESSAGE(STATUS "MSYS=${MSYS}")
 MESSAGE(STATUS "CYGWIN=${CYGWIN}")
@@ -9,6 +9,7 @@ MESSAGE(STATUS "WIN32=${WIN32}")
 IF(NOT DEFINED MINGW)
   SET(MINGW OFF)
 ENDIF()
+
 IF("${CMAKE_GENERATOR}" MATCHES "(M|m?)in(G|g?)(W|w?)")
   SET(MINGW ON)
   MESSAGE(STATUS "MinGW Detected")
@@ -35,8 +36,8 @@ set (HUNTER_SKIP_LOCK ON CACHE BOOL "HUNTER_SKIP_LOCK")
 include(cmake/gate/cmake/HunterGate.cmake)
 option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.23.29.tar.gz"
-        SHA1 "797be99a8a4f4666766257563fad8aa3aa032da2"
+        URL "https://github.com/cpp-pm/hunter/archive/v0.23.248.tar.gz"
+        SHA1 "a637ec52a1b82beb5f55ab4aa75fac30bcee8904"
 )
 project(Engine)
 
@@ -118,6 +119,10 @@ message(STATUS "######################### ADDING ZLIB ##########################
 hunter_add_package(ZLIB)
 find_package(ZLIB CONFIG REQUIRED)
 
+message(STATUS "######################### ADDING MINIZIP #######################################")
+hunter_add_package(minizip)
+find_package(minizip CONFIG REQUIRED)
+
 IF(USE_BULLET)
   message(STATUS "######################### ADDING BULLET #######################################")
   hunter_add_package(bullet)
@@ -155,7 +160,11 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
 add_definitions(-DGLEW_STATIC)
 add_definitions(-UGLEW_BUILD)
 
-add_subdirectory(dependencies)
+add_subdirectory( dependencies )
+
+message(STATUS "######################### ADDING ASSIMP #######################################")
+hunter_add_package(Assimp)
+find_package(Assimp CONFIG REQUIRED)
 
 if(USE_GDCM)
   include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
@@ -178,8 +187,9 @@ if(USE_GDCM)
           )
 endif()
 
-set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
-set ( ASSIMP_LIBRARY assimp )
+#set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
+#set ( ASSIMP_LIBRARY assimp )
+set ( ASSIMP_LIBRARY Assimp::assimp )
 
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
@@ -202,8 +212,8 @@ IF (EMSCRIPTEN)
 
   set(ENGINE_INCLUDES
           ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+#          ${ASSIMP_INCLUDE_DIR}
+#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -229,8 +239,8 @@ ELSEIF(ANDROID)
 
   set(ENGINE_INCLUDES
           ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+#          ${ASSIMP_INCLUDE_DIR}
+#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -250,8 +260,8 @@ ELSE ()
           )
   set(ENGINE_INCLUDES
           ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+#          ${ASSIMP_INCLUDE_DIR}
+#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/

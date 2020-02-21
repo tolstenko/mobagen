@@ -1,9 +1,9 @@
 execute_process( COMMAND git submodule update --init --recursive )
 set_directory_properties( PROPERTIES CLEAN_NO_CUSTOM 1)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE CACHE BOOL "bla")
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE CACHE BOOL "CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS")
 
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "bla")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "BUILD_SHARED_LIBS")
 
 # set opengl only rendering
 set(DIRECTX OFF CACHE BOOL "use directx")
@@ -147,7 +147,7 @@ add_definitions(-DASSIMP_BUILD_NO_IFC_EXPORTER)
 set( ASSIMP_BUILD_XGL_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_XGL_EXPORTER)
 
-set( ASSIMP_BUILD_FBX_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_FBX_EXPORTER)
 
 set( ASSIMP_BUILD_Q3D_IMPORTER OFF CACHE BOOL "Build importer" )
@@ -183,7 +183,10 @@ add_definitions(-DASSIMP_BUILD_NO_GLTF_EXPORTER)
 set( ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_3MF_EXPORTER)
 
-add_subdirectory( assimp )
+#add_subdirectory( assimp )
+
+hunter_add_package(Assimp)
+find_package(Assimp CONFIG REQUIRED)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/imgui/ )
 
@@ -196,7 +199,7 @@ add_library (imgui STATIC
   ${CMAKE_CURRENT_SOURCE_DIR}/imgui/imgui_widgets.cpp
 )
 
-IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip)
-  file(DOWNLOAD https://curl.haxx.se/windows/dl-7.64.1_1/curl-7.64.1_1-win64-mingw.zip ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip EXPECTED_HASH SHA256=c729be88bf139f43fe56aa196058f72ed344dc000877afae33b95cf51c2fb8f8)
-  execute_process( COMMAND "${CMAKE_COMMAND} -E tar xfz curl.zip")
-ENDIF()
+#IF(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip)
+#  file(DOWNLOAD https://curl.haxx.se/windows/dl-7.64.1_1/curl-7.64.1_1-win64-mingw.zip ${CMAKE_CURRENT_SOURCE_DIR}/curl.zip EXPECTED_HASH SHA256=c729be88bf139f43fe56aa196058f72ed344dc000877afae33b95cf51c2fb8f8)
+#  execute_process( COMMAND "${CMAKE_COMMAND} -E tar -xfz curl.zip")
+#ENDIF()

@@ -295,12 +295,12 @@ namespace mobagen {
 
   void renderComponent(Component *component) {
     ImGui::PushID(component);
-    ImGui::AlignFirstTextHeightToWidgets();
+    ImGui::AlignTextToFramePadding();
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.78f, 0.58f, 1.0f));
     bool node_open = ImGui::TreeNodeEx("Component", ImGuiTreeNodeFlags_DefaultOpen, "%s_%u", "component", component);
     ImGui::NextColumn();
-    ImGui::AlignFirstTextHeightToWidgets();
+    ImGui::AlignTextToFramePadding();
     ImGui::Text(component->getType());
     ImGui::PopStyleColor();
     ImGui::NextColumn();
@@ -311,7 +311,7 @@ namespace mobagen {
       for (auto &property : component->m_properties) {
         ImGui::PushID(id++);
 
-        ImGui::AlignFirstTextHeightToWidgets();
+        ImGui::AlignTextToFramePadding();
         ImGui::Bullet();
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.78f, 0.58f, 1.0f, 1.0f));
         ImGui::Selectable(property.first);
@@ -349,13 +349,13 @@ namespace mobagen {
 
   void renderSceneGraph(Entity *sceneGraph) {
     ImGui::PushID(sceneGraph);
-    ImGui::AlignFirstTextHeightToWidgets();
+    ImGui::AlignTextToFramePadding();
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.78f, 1.0f, 0.58f, 1.0f));
     bool node_open = ImGui::TreeNodeEx("Node", ImGuiTreeNodeFlags_DefaultOpen, "%s_%u", "node", sceneGraph);
     ImGui::PopStyleColor();
     ImGui::NextColumn();
-    ImGui::AlignFirstTextHeightToWidgets();
+    ImGui::AlignTextToFramePadding();
     ImGui::NextColumn();
 
     int id = 0;
@@ -364,7 +364,7 @@ namespace mobagen {
       ImGui::PushID(id);
       ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 0.8f, 1.0f, 1.0f));
 
-      ImGui::AlignFirstTextHeightToWidgets();
+      ImGui::AlignTextToFramePadding();
       ImGui::Bullet();
       ImGui::Selectable("translation");
       ImGui::NextColumn();
@@ -420,9 +420,9 @@ namespace mobagen {
     renderComponents(sceneGraph);
     if (showProps) {
       ImGui::SetNextWindowPos(ImVec2(10, 10));
-      ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiSetCond_FirstUseEver);
-      if (!ImGui::Begin("Example: Fixed Overlay", nullptr, ImVec2(0, 0), 0.3f,
-                        ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+      ImGui::SetNextWindowSize(ImVec2(500, 0), ImGuiCond_FirstUseEver);
+      if (!ImGui::Begin("Example: Fixed Overlay", nullptr,
+                        (uint32_t)ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
                         ImGuiWindowFlags_NoSavedSettings)) {
         ImGui::End();
         return;
