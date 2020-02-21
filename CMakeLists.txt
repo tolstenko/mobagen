@@ -160,7 +160,11 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
 add_definitions(-DGLEW_STATIC)
 add_definitions(-UGLEW_BUILD)
 
-add_subdirectory(dependencies)
+add_subdirectory( dependencies )
+
+message(STATUS "######################### ADDING ASSIMP #######################################")
+hunter_add_package(Assimp)
+find_package(Assimp CONFIG REQUIRED)
 
 if(USE_GDCM)
   include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
@@ -183,8 +187,9 @@ if(USE_GDCM)
           )
 endif()
 
-set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
-set ( ASSIMP_LIBRARY assimp )
+#set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
+#set ( ASSIMP_LIBRARY assimp )
+set ( ASSIMP_LIBRARY Assimp::assimp )
 
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
@@ -255,8 +260,8 @@ ELSE ()
           )
   set(ENGINE_INCLUDES
           ${GLM_INCLUDE_DIRS}
-          ${ASSIMP_INCLUDE_DIR}
-          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
+#          ${ASSIMP_INCLUDE_DIR}
+#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/

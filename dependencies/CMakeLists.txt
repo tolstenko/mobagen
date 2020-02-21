@@ -147,7 +147,7 @@ add_definitions(-DASSIMP_BUILD_NO_IFC_EXPORTER)
 set( ASSIMP_BUILD_XGL_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_XGL_EXPORTER)
 
-set( ASSIMP_BUILD_FBX_IMPORTER OFF CACHE BOOL "Build importer" )
+set( ASSIMP_BUILD_FBX_IMPORTER ON CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_FBX_EXPORTER)
 
 set( ASSIMP_BUILD_Q3D_IMPORTER OFF CACHE BOOL "Build importer" )
@@ -183,7 +183,10 @@ add_definitions(-DASSIMP_BUILD_NO_GLTF_EXPORTER)
 set( ASSIMP_BUILD_3MF_IMPORTER OFF CACHE BOOL "Build importer" )
 add_definitions(-DASSIMP_BUILD_NO_3MF_EXPORTER)
 
-add_subdirectory( assimp )
+#add_subdirectory( assimp )
+
+hunter_add_package(Assimp)
+find_package(Assimp CONFIG REQUIRED)
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/imgui/ )
 
