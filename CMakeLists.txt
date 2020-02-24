@@ -188,6 +188,9 @@ set(ENGINE_INCLUDES
 
 #set ( ASSIMP_LIBRARY Assimp::assimp )
 
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+add_definitions(-DGLM_FORCE_SWIZZLE)
+
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
 set ( IMGUI_INCLUDE_DIRS
