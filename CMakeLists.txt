@@ -10,6 +10,7 @@ IF(NOT DEFINED MINGW)
   SET(MINGW OFF)
 ENDIF()
 
+# check if mingw
 IF("${CMAKE_GENERATOR}" MATCHES "(M|m?)in(G|g?)(W|w?)")
   SET(MINGW ON)
   MESSAGE(STATUS "MinGW Detected")
@@ -63,29 +64,42 @@ IF(APPLE)
 ENDIF()
 
 IF(USE_CURL)
-  add_definitions(-DUSE_CURL)
-ENDIF()
-
-if (USE_CURL AND MINGW)
-  find_package(CURL REQUIRED)
-endif ()
-
-IF(USE_CURL AND APPLE)
-  find_program (perl_path NAMES perl perl.exe)
-  IF (NOT perl_path)
-    message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
-  ELSE()
-    message(STATUS "Perl was found in PATH: ${perl_path}")
-  ENDIF()
-
-  message(STATUS "######################### ADDING OPENSSL #######################################")
+  message(STATUS "######################### ADDING OpenSSL #######################################")
   hunter_add_package(OpenSSL)
   find_package(OpenSSL REQUIRED)
 
   message(STATUS "######################### ADDING CURL #######################################")
   hunter_add_package(CURL)
   find_package(CURL CONFIG REQUIRED)
+
+  message(STATUS "######################### ADDING CPR - CURL for PEOPLE #######################################")
+  hunter_add_package(cpr)
+  find_package(cpr CONFIG REQUIRED)
+
+  add_definitions(-DUSE_CURL)
 ENDIF()
+
+
+#if (USE_CURL AND MINGW)
+#  find_package(CURL REQUIRED)
+#endif ()
+#
+#IF(USE_CURL AND APPLE)
+#  find_program (perl_path NAMES perl perl.exe)
+#  IF (NOT perl_path)
+#    message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
+#  ELSE()
+#    message(STATUS "Perl was found in PATH: ${perl_path}")
+#  ENDIF()
+#
+#  message(STATUS "######################### ADDING OPENSSL #######################################")
+#  hunter_add_package(OpenSSL)
+#  find_package(OpenSSL REQUIRED)
+#
+#  message(STATUS "######################### ADDING CURL #######################################")
+#  hunter_add_package(CURL)
+#  find_package(CURL CONFIG REQUIRED)
+#ENDIF()
 
 # zlib support
 message(STATUS "######################### ADDING ZLIB #######################################")
@@ -135,9 +149,9 @@ add_definitions(-UGLEW_BUILD)
 
 add_subdirectory( dependencies )
 
-message(STATUS "######################### ADDING ASSIMP #######################################")
-hunter_add_package(Assimp)
-find_package(Assimp CONFIG REQUIRED)
+#message(STATUS "######################### ADDING ASSIMP #######################################")
+#hunter_add_package(Assimp)
+#find_package(Assimp CONFIG REQUIRED)
 
 IF(USE_GDCM)
   message(STATUS "######################### ADDING GDCM #######################################")
@@ -165,9 +179,14 @@ IF(USE_GDCM)
           )
 ENDIF()
 
-#set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
-#set ( ASSIMP_LIBRARY assimp )
-set ( ASSIMP_LIBRARY Assimp::assimp )
+set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
+set ( ASSIMP_LIBRARY assimp )
+
+set(ENGINE_INCLUDES
+        ${ASSIMP_INCLUDE_DIR}
+        ${CMAKE_BINARY_DIR}/dependencies/assimp/include)
+
+#set ( ASSIMP_LIBRARY Assimp::assimp )
 
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
@@ -189,9 +208,8 @@ IF (EMSCRIPTEN)
           )
 
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -216,9 +234,8 @@ ELSEIF(ANDROID)
           )
 
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -237,9 +254,8 @@ ELSE ()
           ${IMGUI_LIBRARY}
           )
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -269,13 +285,17 @@ ENDIF()
 
 SET(ENGINE_LIBS ${ENGINE_LIBS} ZLIB::zlib)
 
-IF(USE_CURL AND MINGW)
-  SET(ENGINE_INCLUDES ${ENGINE_INCLUDES} ${CURL_INCLUDE_DIR})
-  SET(ENGINE_LIBS ${ENGINE_LIBS} ${CURL_LIBRARIES})
-ENDIF()
+#IF(USE_CURL AND MINGW)
+#  SET(ENGINE_INCLUDES ${ENGINE_INCLUDES} ${CURL_INCLUDE_DIR})
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} ${CURL_LIBRARIES})
+#ELSEIF(USE_CURL AND APPLE)
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
+#ELSE()
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl BoringSSL::ssl BoringSSL::crypto)
+#ENDIF()
 
-IF(USE_CURL AND APPLE)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
+IF(USE_CURL)
+  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
 ENDIF()
 
 include_directories(${ENGINE_INCLUDES})

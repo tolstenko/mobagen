@@ -19,3 +19,6 @@
 [submodule "cmake/gate"]
 	path = cmake/gate
 	url = https://github.com/hunter-packages/gate.git
+[submodule "dependencies/assimp"]
+	path = dependencies/assimp
+	url = https://github.com/assimp/assimp
