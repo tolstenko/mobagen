@@ -39,6 +39,7 @@ option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
         URL "https://github.com/cpp-pm/hunter/archive/v0.23.248.tar.gz"
         SHA1 "a637ec52a1b82beb5f55ab4aa75fac30bcee8904"
+        FILEPATH "${CMAKE_CURRENT_SOURCE_DIR}/config.cmake"
 )
 project(Engine)
 
@@ -63,10 +64,14 @@ IF(APPLE)
   add_definitions(-DAPPLE)
 ENDIF()
 
+#message(STATUS "######################### ADDING GLM #######################################")
+#hunter_add_package(glm)
+#find_package(glm REQUIRED)
+
 IF(USE_CURL)
-  message(STATUS "######################### ADDING OpenSSL #######################################")
-  hunter_add_package(OpenSSL)
-  find_package(OpenSSL REQUIRED)
+#  message(STATUS "######################### ADDING OpenSSL #######################################")
+#  hunter_add_package(OpenSSL)
+#  find_package(OpenSSL REQUIRED)
 
   message(STATUS "######################### ADDING CURL #######################################")
   hunter_add_package(CURL)
@@ -188,6 +193,9 @@ set(ENGINE_INCLUDES
 
 #set ( ASSIMP_LIBRARY Assimp::assimp )
 
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+add_definitions(-DGLM_FORCE_SWIZZLE)
+
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
 set ( IMGUI_INCLUDE_DIRS
@@ -202,6 +210,7 @@ IF (EMSCRIPTEN)
   add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
   set(ENGINE_LIBS
+          glm
           ${ASSIMP_LIBRARY}
           ${IMGUI_LIBRARY}
           ${GDCM_LIBRARIES}
@@ -295,8 +304,10 @@ SET(ENGINE_LIBS ${ENGINE_LIBS} ZLIB::zlib)
 #ENDIF()
 
 IF(USE_CURL)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
+  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl cpr::cpr)
 ENDIF()
+
 
 include_directories(${ENGINE_INCLUDES})
 
