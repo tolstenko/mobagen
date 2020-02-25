@@ -20,7 +20,10 @@ namespace mobagen {
   class WebRequest {
   public:
     WebRequest();
-    WebRequest(std::string url);
+    WebRequest(
+        const std::string& url,
+        std::map<std::string,std::string>headers=std::map<std::string,std::string>(),
+        std::string body=nullptr);
     //WebRequest(Uri uri);
     //WebRequest(std::string url, std::string method);
     //WebRequest(Uri uri, string method);
@@ -28,50 +31,9 @@ namespace mobagen {
     //WebRequest(Uri uri, string method, Networking.DownloadHandler downloadHandler, Networking.UploadHandler uploadHandler);
     ~WebRequest();
 
-    // TODO: change these verbs to enum
-    // The string "CREATE", commonly used as the verb for an HTTP CREATE request.
-    static const std::string kHttpVerbCREATE;
-    // The string "DELETE", commonly used as the verb for an HTTP DELETE request.
-    static const std::string kHttpVerbDELETE;
-    // The string "GET", commonly used as the verb for an HTTP GET request.
-    static const std::string kHttpVerbGET;
-    // The string "HEAD", commonly used as the verb for an HTTP HEAD request.
-    static const std::string kHttpVerbHEAD;
-    // The string "POST", commonly used as the verb for an HTTP POST request.
-    static const std::string kHttpVerbPOST;
-    // The string "PUT", commonly used as the verb for an HTTP PUT request.
-    static const std::string kHttpVerbPUT;
+  private:
 
-// properties
-//      certificateHandler	Holds a reference to a CertificateHandler object, which manages certificate validation for this UnityWebRequest.
-//      chunkedTransfer	Indicates whether the UnityWebRequest system should employ the HTTP/1.1 chunked-transfer encoding method.
-//      disposeCertificateHandlerOnDispose	If true, any CertificateHandler attached to this UnityWebRequest will have CertificateHandler.Dispose called automatically when UnityWebRequest.Dispose is called.
-//      disposeDownloadHandlerOnDispose	If true, any DownloadHandler attached to this UnityWebRequest will have DownloadHandler.Dispose called automatically when UnityWebRequest.Dispose is called.
-//      disposeUploadHandlerOnDispose	If true, any UploadHandler attached to this UnityWebRequest will have UploadHandler.Dispose called automatically when UnityWebRequest.Dispose is called.
-//      downloadedBytes	Returns the number of bytes of body data the system has downloaded from the remote server. (Read Only)
-    // Holds a reference to a DownloadHandler object, which manages body data received from the remote server by this UnityWebRequest.
-    // std::shared_ptr<DownloadHandler> downloadHandler = std::make_shared<DownloadHandler>();
-//      downloadProgress	Returns a floating-point value between 0.0 and 1.0, indicating the progress of downloading body data from the server. (Read Only)
-//      error	A human-readable string describing any system errors encountered by this UnityWebRequest object while handling HTTP requests or responses. (Read Only)
-//      isDone	Returns true after the UnityWebRequest has finished communicating with the remote server. (Read Only)
-//      isHttpError	Returns true after this UnityWebRequest receives an HTTP response code indicating an error. (Read Only)
-//      isModifiable	Returns true while a UnityWebRequest’s configuration properties can be altered. (Read Only)
-//      isNetworkError	Returns true after this UnityWebRequest encounters a system error. (Read Only)
-//      method	Defines the HTTP verb used by this UnityWebRequest, such as GET or POST.
-//      redirectLimit	Indicates the number of redirects which this UnityWebRequest will follow before halting with a “Redirect Limit Exceeded” system error.
-//      responseCode	The numeric HTTP response code returned by the server, such as 200, 404 or 500. (Read Only)
-//      timeout	Sets UnityWebRequest to attempt to abort after the number of seconds in timeout have passed.
-//      uploadedBytes	Returns the number of bytes of body data the system has uploaded to the remote server. (Read Only)
-//      uploadHandler	Holds a reference to the UploadHandler object which manages body data to be uploaded to the remote server.
-//      uploadProgress	Returns a floating-point value between 0.0 and 1.0, indicating the progress of uploading body data to the server.
-//      uri	Defines the target URI for the UnityWebRequest to communicate with.
-//      url	Defines the target URL for the UnityWebRequest to communicate with.
-//      useHttpContinue	Determines whether this UnityWebRequest will include Expect: 100-Continue in its outgoing request headers. (Default: true).
-
-
-// public methods
-//        Abort	If in progress, halts the UnityWebRequest as soon as possible.
-//        Dispose	Signals that this UnityWebRequest is no longer being used, and should clean up any resources it is using.
+    public:
     // Retrieves the value of a custom request header.
     std::string GetRequestHeader(std::string name);
     // Retrieves the value of a response header from the latest HTTP response received.
@@ -102,11 +64,11 @@ namespace mobagen {
 
   private:
     // default method
-    const std::string * method;
+    const std::string * method{};
     std::string url;
 
-    std::map<std::string,std::string> requestHeaders;
-    std::map<std::string,std::string> responseHeaders;
+    std::map<std::string,std::string> headers;
+    std::string body;
 
 #if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
     std::string readBuffer = "";

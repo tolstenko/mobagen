@@ -4,16 +4,10 @@
 #include "Logger.hpp"
 
 namespace mobagen {
-  const std::string WebRequest::kHttpVerbCREATE = "CREATE";
-  const std::string WebRequest::kHttpVerbDELETE = "DELETE";
-  const std::string WebRequest::kHttpVerbGET = "GET";
-  const std::string WebRequest::kHttpVerbHEAD	= "HEAD";
-  const std::string WebRequest::kHttpVerbPOST = "POST";
-  const std::string WebRequest::kHttpVerbPUT = "PUT";
 
   WebRequest::WebRequest() {
 
-    method = &kHttpVerbGET;
+    method = &HttpVerb::GET
 #if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
     easyhandle = nullptr;
     curl_global_init(CURL_GLOBAL_ALL);
@@ -83,5 +77,11 @@ namespace mobagen {
 #else
     return "";
 #endif
+  }
+  
+  WebRequest::WebRequest(const std::string& url, HttpVerb  std::map<std::string, std::string> headers, std::string body) {
+    this->url = url;
+    this->headers = headers;
+    this->body = body;
   }
 }
