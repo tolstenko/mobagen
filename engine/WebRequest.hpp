@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include "HttpVerb.hpp"
+#include "WwwForm.hpp"
 #include <curl/curl.h>
 
 // TODO: move this to network namespace
@@ -53,6 +54,10 @@ namespace mobagen {
         std::string url,
         const std::map<std::string, std::string>& headers = std::map<std::string, std::string>(),
         const std::string &data = "");
+
+//    static std::shared_ptr<WebRequest> Post(
+//        std::string url,
+//        std::shared_ptr<WwwForm> form = nullptr);
 //        Put	Creates a UnityWebRequest configured to upload raw data to a remote server via HTTP PUT.
 //        SerializeFormSections	Converts a List of IMultipartFormSection objects into a byte array containing raw multipart form data.
 //        SerializeSimpleForm	Serialize a dictionary of strings into a byte array containing URL-encoded UTF8 characters.

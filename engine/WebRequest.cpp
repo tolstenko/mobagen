@@ -4,6 +4,8 @@
 #include "Logger.hpp"
 #include "HttpVerb.hpp"
 
+#include "WwwTranscoder.hpp"
+
 namespace mobagen {
   WebRequest::WebRequest() {
     this->url = "";
@@ -63,8 +65,16 @@ namespace mobagen {
       std::string url,
       const std::map<std::string, std::string> &headers,
       const std::string &data) {
-    auto req = std::make_shared<WebRequest>(url,HttpVerbEnum::POST,headers,data);
+    auto input = str2vec(data);
+    auto bytes = Encode(input, urlEscapeChar, dataSpace, urlForbidden, false);
+    return std::make_shared<WebRequest>(url,HttpVerbEnum::POST,headers, bytes);
   }
+
+//  std::shared_ptr<WebRequest>
+//  WebRequest::Post(std::string url,
+//                   std::shared_ptr<WwwForm> form) {
+//    return std::make_shared<WebRequest>(url,HttpVerbEnum::POST, form->GetHeaders(), form->GetData());
+//  }
 
   std::string WebRequest::GetData() {
 #if (defined(USE_CURL))
@@ -73,6 +83,8 @@ namespace mobagen {
     return "";
 #endif
   }
+
+
 
 
 }
