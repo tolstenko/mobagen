@@ -34,7 +34,7 @@ void Menu::onGUI(ImGuiContext* context)
 		ImVec2 pos = ImVec2(400, 170);
 		ImGui::SetNextWindowPos(pos);
 		ImGui::SetNextWindowSize(ImVec2(200, 200));
-		ImGui::Begin("", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+		ImGui::Begin(" ", 0, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
 			ImGuiWindowFlags_NoCollapse  |
 			ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoTitleBar);
 		

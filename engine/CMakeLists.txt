@@ -21,7 +21,7 @@ add_library (engine STATIC ${TARGET_SRC})
 
 If(NOT EMSCRIPTEN AND NOT ANDROID)
   add_definitions(-DGLEW_STATIC)
-  add_definitions(-UGLEW_BUILD)
+#  add_definitions(-DGLEW_BUILD)
   set(GLEW_USE_STATIC_LIBS ON CACHE BOOL "bla")
   set(BUILD_SHARED_LIBS OFF CACHE BOOL "bla")
   set( glew-cmake_BUILD_SHARED OFF CACHE BOOL "Build the shared glew library" )

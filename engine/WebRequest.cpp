@@ -2,86 +2,77 @@
 
 #include "WebRequest.hpp"
 #include "Logger.hpp"
+#include "HttpVerb.hpp"
 
 namespace mobagen {
-
   WebRequest::WebRequest() {
+    this->url = "";
+    this->method = HttpVerbEnum::GET;
+    this->headers = std::map<std::string, std::string>();
+    this->body = "";
 
-    method = &HttpVerb::GET
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    easyhandle = nullptr;
-    curl_global_init(CURL_GLOBAL_ALL);
-#else
+#if defined(USE_CURL)
+    curl = curl_easy_init() ;
 #endif
   }
 
-  WebRequest::WebRequest(std::string url) {
-    
-    method = &kHttpVerbGET;
-    this->url = std::move(url);
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    curl_global_init(CURL_GLOBAL_ALL);
-    easyhandle = nullptr;
-#else
+  WebRequest::WebRequest(
+      const std::string &url,
+      const HttpVerbEnum &method,
+      const std::map<std::string, std::string>& headers,
+      const std::string &body) {
+    this->url = url;
+    this->method = method;
+    this->headers = headers;
+    this->body = body;
+
+#if defined(USE_CURL)
+    // TODO: this potentially calls "curl_global_init(CURL_GLOBAL_ALL);" so either we call it properly or make this line thread safe
+    curl = curl_easy_init();
 #endif
   }
 
   WebRequest::~WebRequest() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    if(easyhandle!=nullptr)
-      curl_easy_cleanup(easyhandle);
-    easyhandle = nullptr;
-    curl_global_cleanup(); // TODO: inspect if this is necessary
+#if defined(USE_CURL)
+    if(curl!=nullptr)
+      curl_easy_cleanup(curl);
+    curl = nullptr;
 #endif
   }
 
-  std::shared_ptr<WebRequest> WebRequest::Get(std::string url) {
-    std::shared_ptr<WebRequest> req = std::make_shared<WebRequest>();
-
-    req->method = &kHttpVerbGET;
-    req->url = std::move(url);
-    return req;
-  }
-
-  std::string WebRequest::GetRequestHeader(std::string name) {
-    return requestHeaders[name];
-  }
-
-  std::string WebRequest::GetResponseHeader(std::string name) {
-    return responseHeaders[name];
-  }
-
-  std::map<std::string, std::string> WebRequest::GetResponseHeaders() {
-    return responseHeaders;
-  }
-
-  void WebRequest::SetRequestHeader(std::string name, std::string value) {
-    requestHeaders[name] = value;
+  // VERBS
+  std::shared_ptr<WebRequest> WebRequest::Get(
+      std::string url,
+      const std::map<std::string, std::string>& headers) {
+    return std::make_shared<WebRequest>(url,HttpVerbEnum::GET,headers);
   }
 
   void WebRequest::SendWebRequest() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    easyhandle = curl_easy_init();
-    curl_easy_setopt(easyhandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, 1L);
-    curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
-    curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
+#if (defined(USE_CURL))
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-    curl_easy_perform(easyhandle);
+    curl_easy_perform(curl);
 #endif
   }
 
+  std::shared_ptr<WebRequest>
+  WebRequest::Post(
+      std::string url,
+      const std::map<std::string, std::string> &headers,
+      const std::string &data) {
+    auto req = std::make_shared<WebRequest>(url,HttpVerbEnum::POST,headers,data);
+  }
+
   std::string WebRequest::GetData() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
+#if (defined(USE_CURL))
     return readBuffer;
 #else
     return "";
 #endif
   }
-  
-  WebRequest::WebRequest(const std::string& url, HttpVerb  std::map<std::string, std::string> headers, std::string body) {
-    this->url = url;
-    this->headers = headers;
-    this->body = body;
-  }
+
+
 }

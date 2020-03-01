@@ -56,12 +56,21 @@ ENDIF()
 
 ReadVariables(buildconfig.mk)
 
+message(STATUS "``'-.,_,.-'``'-.,_,.='``'-.,_,.-'`` Build Config ``'-.,_,.-'``'-.,_,.='``'-.,_,.-'``")
 message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
 message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
 message(STATUS "USE_CURL from config file: ${USE_CURL}")
+message(STATUS "USE_v8 from config file: ${USE_V8}")
+message(STATUS "``'-.,_,.-'``'-.,_,.='``'-.,_,.-'`` Build Config ``'-.,_,.-'``'-.,_,.='``'-.,_,.-'``")
 
 IF(APPLE)
   add_definitions(-DAPPLE)
+ENDIF()
+
+IF(USE_V8)
+  message(STATUS "######################### ADDING V8 #######################################")
+  hunter_add_package(v8)
+  find_package(v8 CONFIG REQUIRED)
 ENDIF()
 
 #message(STATUS "######################### ADDING GLM #######################################")
@@ -77,9 +86,9 @@ IF(USE_CURL)
   hunter_add_package(CURL)
   find_package(CURL CONFIG REQUIRED)
 
-  message(STATUS "######################### ADDING CPR - CURL for PEOPLE #######################################")
-  hunter_add_package(cpr)
-  find_package(cpr CONFIG REQUIRED)
+#  message(STATUS "######################### ADDING CPR - CURL for PEOPLE #######################################")
+#  hunter_add_package(cpr)
+#  find_package(cpr CONFIG REQUIRED)
 
   add_definitions(-DUSE_CURL)
 ENDIF()
@@ -149,9 +158,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
 
-add_definitions(-DGLEW_STATIC)
-add_definitions(-UGLEW_BUILD)
-
 add_subdirectory( dependencies )
 
 #message(STATUS "######################### ADDING ASSIMP #######################################")
@@ -210,6 +216,7 @@ IF (EMSCRIPTEN)
   add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
           glm
           ${ASSIMP_LIBRARY}
           ${IMGUI_LIBRARY}
@@ -235,6 +242,7 @@ ELSEIF(ANDROID)
   add_definitions( -DGLES2=1 )
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
           SDL2::SDL2
           SDL2::SDL2main
           ${ASSIMP_LIBRARY}
@@ -256,6 +264,7 @@ ELSE ()
   find_package(OpenGL REQUIRED)
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
           SDL2::SDL2
           SDL2::SDL2main
           ${OPENGL_LIBRARY}
@@ -303,9 +312,20 @@ SET(ENGINE_LIBS ${ENGINE_LIBS} ZLIB::zlib)
 #  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl BoringSSL::ssl BoringSSL::crypto)
 #ENDIF()
 
+IF(USE_v8)
+  SET(ENGINE_LIBS ${ENGINE_LIBS}
+        v8::v8_libplatform
+        v8::v8_libbase
+        v8::v8_base
+        v8::v8_nosnapshot
+        v8::v8_init
+        v8::v8_initializers
+        v8::v8_libsampler)
+ENDIF()
+
 IF(USE_CURL)
 #  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl cpr::cpr)
+  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl)
 ENDIF()
 
 
