@@ -4,7 +4,12 @@
 #include <memory>
 #include "HttpVerb.hpp"
 #include "WwwForm.hpp"
-#include <curl/curl.h>
+#if USE_CURL
+  #include <cpr/cpr.h>
+  #include <curl/curl.h>
+#elif EMSCRIPTEN
+  #include <emscripten/fetch.h>
+#endif
 
 // TODO: move this to network namespace
 namespace mobagen {
@@ -45,9 +50,10 @@ namespace mobagen {
     // Static VERBS functions
 
     // Get Creates a WebRequest configured to send a HTTP GET request.
-    static std::shared_ptr<WebRequest> Get(
-        std::string url,
-        const std::map<std::string, std::string>& headers = std::map<std::string, std::string>());
+    static void Get(
+        std::string &url,
+        const std::map<std::string, std::string>& headers = std::map<std::string, std::string>(),
+        const std::function<void(std::string, std::string)>& callback = nullptr);
 //        Head	Creates a UnityWebRequest configured to send a HTTP HEAD request.
 //        Post	Creates a UnityWebRequest configured to send form data to a server via HTTP POST.
     static std::shared_ptr<WebRequest> Post(
@@ -63,8 +69,6 @@ namespace mobagen {
 //        SerializeSimpleForm	Serialize a dictionary of strings into a byte array containing URL-encoded UTF8 characters.
 //        UnEscapeURL	Converts URL-friendly escape sequences back to normal text.
 
-
-
   private:
     // default method
     HttpVerbEnum method;
@@ -73,18 +77,31 @@ namespace mobagen {
     std::map<std::string,std::string> headers;
     std::string body;
 
-#if defined(USE_CURL)
-    std::string readBuffer = "";
 
-    static size_t WriteCallback(char *contents, size_t size, size_t nmemb, void *userp)
-    {
-        ((std::string*)userp)->append((char*)contents, size * nmemb);
-        return size * nmemb;
+
+#if defined(EMSCRIPTEN) && defined(USE_CURL)
+    void downloadProgress(emscripten_fetch_t *fetch) {
+      if (fetch->totalBytes) {
+        printf("Downloading %s.. %.2f%% complete.\n", fetch->url, fetch->dataOffset * 100.0 / fetch->totalBytes);
+      } else {
+        printf("Downloading %s.. %lld bytes complete.\n", fetch->url, fetch->dataOffset + fetch->numBytes);
+      }
+    }
+    void downloadSucceeded(emscripten_fetch_t *fetch) {
+      printf("Finished downloading %llu bytes from URL %s.\n", fetch->numBytes, fetch->url);
+      // The data is now available at fetch->data[0] through fetch->data[fetch->numBytes-1];
+      emscripten_fetch_close(fetch); // Free data associated with the fetch.
     }
 
-    CURL* curl; // do not need to involve unique ptr here
-#else
-
+    void downloadFailed(emscripten_fetch_t *fetch) {
+      printf("Downloading %s failed, HTTP failure status code: %d.\n", fetch->url, fetch->status);
+      emscripten_fetch_close(fetch); // Also free data on failure.
+    }
+#elif defined(USE_CURL)
+    void setupProgress(){
+      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+    }
 #endif
   };
 }

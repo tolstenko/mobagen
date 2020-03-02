@@ -82,9 +82,9 @@ IF(USE_CURL)
 #  hunter_add_package(OpenSSL)
 #  find_package(OpenSSL REQUIRED)
 
-  message(STATUS "######################### ADDING CURL #######################################")
-  hunter_add_package(CURL)
-  find_package(CURL CONFIG REQUIRED)
+  message(STATUS "######################### ADDING cpr #######################################")
+  hunter_add_package(cpr)
+  find_package(cpr CONFIG REQUIRED)
 
 #  message(STATUS "######################### ADDING CPR - CURL for PEOPLE #######################################")
 #  hunter_add_package(cpr)
@@ -212,7 +212,7 @@ set ( IMGUI_LIBRARY imgui )
 IF (EMSCRIPTEN)
   #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/Engine/example/assets/ -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -s TOTAL_MEMORY=536870912 -s USE_SDL=2 -std=c++14 -Oz")
   #SET(CMAKE_CXX_FLAGS "--closure 1 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -Oz ")
-  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2")
+  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2 -s USE_PTHREADS=1 --proxy-to-worker -s FETCH=1")
   add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
   set(ENGINE_LIBS
@@ -325,7 +325,7 @@ ENDIF()
 
 IF(USE_CURL)
 #  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl)
+  SET(ENGINE_LIBS ${ENGINE_LIBS} cpr::cpr)
 ENDIF()
 
 

@@ -12,10 +12,6 @@ namespace mobagen {
     this->method = HttpVerbEnum::GET;
     this->headers = std::map<std::string, std::string>();
     this->body = "";
-
-#if defined(USE_CURL)
-    curl = curl_easy_init() ;
-#endif
   }
 
   WebRequest::WebRequest(
@@ -27,36 +23,32 @@ namespace mobagen {
     this->method = method;
     this->headers = headers;
     this->body = body;
-
-#if defined(USE_CURL)
-    // TODO: this potentially calls "curl_global_init(CURL_GLOBAL_ALL);" so either we call it properly or make this line thread safe
-    curl = curl_easy_init();
-#endif
   }
 
   WebRequest::~WebRequest() {
 #if defined(USE_CURL)
-    if(curl!=nullptr)
-      curl_easy_cleanup(curl);
-    curl = nullptr;
+
 #endif
   }
 
   // VERBS
-  std::shared_ptr<WebRequest> WebRequest::Get(
-      std::string url,
-      const std::map<std::string, std::string>& headers) {
-    return std::make_shared<WebRequest>(url,HttpVerbEnum::GET,headers);
+  void
+  WebRequest::Get(
+      std::string &url,
+      const std::map<std::string, std::string>& headers,
+      const std::function<void(std::string, std::string)>& onFinish) {
+#if defined(EMSCRIPTEN) && defined(USE_CURL)
+#elif defined(USE_CURL)
+    cpr::GetCallback([onFinish](const cpr::Response & r) {
+      onFinish(r.error.message,r.text);
+      return r.text;
+    },cpr::Url(url), headers);
+#endif
   }
 
   void WebRequest::SendWebRequest() {
 #if (defined(USE_CURL))
-    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-    curl_easy_perform(curl);
 #endif
   }
 
@@ -65,9 +57,6 @@ namespace mobagen {
       std::string url,
       const std::map<std::string, std::string> &headers,
       const std::string &data) {
-    auto input = str2vec(data);
-    auto bytes = Encode(input, urlEscapeChar, dataSpace, urlForbidden, false);
-    return std::make_shared<WebRequest>(url,HttpVerbEnum::POST,headers, bytes);
   }
 
 //  std::shared_ptr<WebRequest>
@@ -78,7 +67,7 @@ namespace mobagen {
 
   std::string WebRequest::GetData() {
 #if (defined(USE_CURL))
-    return readBuffer;
+    return "";
 #else
     return "";
 #endif
