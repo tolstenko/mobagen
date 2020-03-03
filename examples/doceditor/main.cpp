@@ -46,9 +46,20 @@ void DocEditor::init(GLManager *glManager)
   auto primary_camera = cam->getComponent<OrthoCamera>();
   getEngine()->getGLManager()->setActiveCamera(primary_camera);
 
-  auto request = WebRequest::Get("https://www.httpbin.org/get");
-  request->SendWebRequest();
-  log_info("%s", request->GetData().c_str());
+  std::map<std::string, std::string> headers = {{"tolsta","tolsta"},{"Content-Type", "text/plain"}};
+  std::string body = "this is raw data";
+  std::string get = "https://www.httpbin.org/get";
+  std::string post = "https://www.httpbin.org/post";
+
+  WebRequest::Get(get,headers,[](const std::string& err, const std::string& res){
+    log_info("%s",err.c_str());
+    log_info("%s",res.c_str());
+  });
+
+  WebRequest::Post(post,headers,body,[](const std::string& err, const std::string& res){
+    log_info("%s",err.c_str());
+    log_info("%s",res.c_str());
+  });
 }
 
 int main(int argc, char *argv[]) {

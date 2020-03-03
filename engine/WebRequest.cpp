@@ -39,31 +39,28 @@ namespace mobagen {
       const std::function<void(std::string, std::string)>& onFinish) {
 #if defined(EMSCRIPTEN) && defined(USE_CURL)
 #elif defined(USE_CURL)
-    cpr::GetCallback([onFinish](const cpr::Response & r) {
+    cpr::Header h = (const std::map<std::basic_string<char>, std::basic_string<char>, cpr::CaseInsensitiveCompare> &) headers;
+    cpr::GetCallback([onFinish](const cpr::Response& r) {
       onFinish(r.error.message,r.text);
       return r.text;
-    },cpr::Url(url), headers);
+    },cpr::Url(url), h);
 #endif
   }
 
-  void WebRequest::SendWebRequest() {
-#if (defined(USE_CURL))
-
-#endif
-  }
-
-  std::shared_ptr<WebRequest>
+  void
   WebRequest::Post(
-      std::string url,
+      std::string &url,
       const std::map<std::string, std::string> &headers,
-      const std::string &data) {
+      const std::string &data,
+      const std::function<void(std::string, std::string)>& onFinish) {
+#if defined(EMSCRIPTEN) && defined(USE_CURL)
+#elif defined(USE_CURL)
+    cpr::PostCallback([onFinish](const cpr::Response& r) {
+      onFinish(r.error.message,r.text);
+      return r.text;
+    },cpr::Url(url), cpr::Body{data}, headers);
+#endif
   }
-
-//  std::shared_ptr<WebRequest>
-//  WebRequest::Post(std::string url,
-//                   std::shared_ptr<WwwForm> form) {
-//    return std::make_shared<WebRequest>(url,HttpVerbEnum::POST, form->GetHeaders(), form->GetData());
-//  }
 
   std::string WebRequest::GetData() {
 #if (defined(USE_CURL))

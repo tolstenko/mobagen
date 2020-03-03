@@ -56,10 +56,11 @@ namespace mobagen {
         const std::function<void(std::string, std::string)>& callback = nullptr);
 //        Head	Creates a UnityWebRequest configured to send a HTTP HEAD request.
 //        Post	Creates a UnityWebRequest configured to send form data to a server via HTTP POST.
-    static std::shared_ptr<WebRequest> Post(
-        std::string url,
+    static void Post(
+        std::string &url,
         const std::map<std::string, std::string>& headers = std::map<std::string, std::string>(),
-        const std::string &data = "");
+        const std::string &data = "",
+        const std::function<void(std::string, std::string)>& onFinish = nullptr);
 
 //    static std::shared_ptr<WebRequest> Post(
 //        std::string url,
@@ -98,10 +99,10 @@ namespace mobagen {
       emscripten_fetch_close(fetch); // Also free data on failure.
     }
 #elif defined(USE_CURL)
-    void setupProgress(){
-      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-    }
+//    void setupProgress(){
+//      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+//      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+//    }
 #endif
   };
 }
