@@ -1,6 +1,7 @@
 #include <memory>
 #include <Logger.hpp>
 #include "Request.hpp"
+#include <algorithm>
 
 void mobagen::networking::Request::setHeader(std::string &key, std::string &value) {
   headers[key] = value;
@@ -115,8 +116,8 @@ void mobagen::networking::Request::sendGet() {
   res = curl_easy_perform(curl);
   if(res != CURLE_OK)
   {
-    auto stderr = curl_easy_strerror(res);
-    auto codeerr = res;
+    // auto stderr = curl_easy_strerror(res);
+    // auto codeerr = res;
     // todo: respond the error
   }
 
