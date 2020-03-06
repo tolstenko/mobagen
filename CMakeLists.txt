@@ -120,13 +120,13 @@ ENDIF()
 #ENDIF()
 
 # zlib support
-message(STATUS "######################### ADDING ZLIB #######################################")
-hunter_add_package(ZLIB)
-find_package(ZLIB CONFIG REQUIRED)
-
-message(STATUS "######################### ADDING MINIZIP #######################################")
-hunter_add_package(minizip)
-find_package(minizip CONFIG REQUIRED)
+#message(STATUS "######################### ADDING ZLIB #######################################")
+#hunter_add_package(ZLIB)
+#find_package(ZLIB CONFIG REQUIRED)
+#
+#message(STATUS "######################### ADDING MINIZIP #######################################")
+#hunter_add_package(minizip)
+#find_package(minizip CONFIG REQUIRED)
 
 IF(USE_BULLET)
   message(STATUS "######################### ADDING BULLET #######################################")
