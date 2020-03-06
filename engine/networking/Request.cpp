@@ -85,6 +85,10 @@ void mobagen::networking::Request::sendGet() {
   // set verb
   curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
 
+  // disable check ssl issuer
+  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+  curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+
   // set header
   struct curl_slist *list = nullptr;
   for (const auto& element : headers) {
@@ -98,10 +102,12 @@ void mobagen::networking::Request::sendGet() {
   if(!headers.empty())
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 
+  std::shared_ptr<Response> response = std::make_shared<Response>();
+  response->url = url;
+
   // set read buffer
-  std::string readBuffer;
   curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response->text);
 
   // set header buffer
   std::string headerBuffer;
@@ -121,9 +127,6 @@ void mobagen::networking::Request::sendGet() {
     // todo: respond the error
   }
 
-  auto response = std::make_shared<Response>();
-  response->url = url;
-
   // status
   curl_easy_getinfo (curl, CURLINFO_RESPONSE_CODE, &response->status_code);
 
@@ -136,9 +139,6 @@ void mobagen::networking::Request::sendGet() {
         response->headers[pair[0]] = pair[1];
     }
   }
-
-  // process data
-  response->text = readBuffer;
 
   // free
   curl_slist_free_all(list);

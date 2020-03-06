@@ -15,7 +15,29 @@ jobs:
 
   - job: Windows
     pool:
-      vmImage: 'vs2017-win2016'
+      vmImage: 'windows-latest'
     timeoutInMinutes: 360
     steps:
-      - script: echo teste  # Template reference
+      - script: |
+          git submodule update --init --recursive
+        displayName: 'git submodule init'
+
+      - task: jungeriusit.jungit-choco.jungit-chocoinstalled.ChocolateyInstaller@1
+        displayName: 'Install/Upgrade Chocolatey'
+        inputs:
+          upgradeIfNeeded: true
+        continueOnError: true
+        timeoutInMinutes: 30
+
+      - task: jungeriusit.jungit-choco.jungit-chocoinstaller.ChocoInstallPackage@1
+        displayName: 'Install msys2'
+        inputs:
+          packageId: msys2
+        continueOnError: true
+        timeoutInMinutes: 30
+
+      - script: 'C:\tools\msys64\usr\bin\sh.exe scripts\mingw-install-toolkit.sh'
+        displayName: 'Install toolkit'
+
+      - script: 'C:\tools\msys64\usr\bin\sh.exe scripts\mingw-build.sh'
+        displayName: Build
