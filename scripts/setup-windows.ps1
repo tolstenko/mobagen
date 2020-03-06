@@ -237,4 +237,7 @@ Write-Output 'Installing toolkit'
 #if (![System.IO.Directory]::Exists($chocoPkgDir)) { [System.IO.Directory]::CreateDirectory($chocoPkgDir); }
 #Copy-Item "$file" "$nupkg" -Force -ErrorAction SilentlyContinue
 
-choco install visualstudio2017buildtools --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
+# choco install -y visualstudio2017buildtools --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
+choco install -y visualstudio2019buildtools --package-parameters "--allWorkloads --includeRecommended --includeOptional --passive --locale en-US"
+choco install -y strawberryperl
+choco install -y golang

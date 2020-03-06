@@ -18,6 +18,7 @@
 #include <iostream>
 #include <map>
 #include <random>
+#include <networking/Request.hpp>
 #include "WebRequest.hpp"
 
 using namespace mobagen;
@@ -50,6 +51,12 @@ void DocEditor::init(GLManager *glManager)
   std::string body = "this is raw data";
   std::string get = "https://www.httpbin.org/get";
   std::string post = "https://www.httpbin.org/post";
+
+  auto request = new mobagen::networking::Request();
+  request->setUrl(get);
+  request->setMethod(HttpVerbEnum::GET);
+  request->setHeaders(headers);
+  request->send();
 
   WebRequest::Get(get,headers,[](const std::string& err, const std::string& res){
     log_info("%s",err.c_str());
