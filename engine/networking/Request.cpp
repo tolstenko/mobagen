@@ -36,10 +36,6 @@ void mobagen::networking::Request::send() {
   }
 }
 
-void mobagen::networking::Request::setOnSuccess(std::function<void(std::shared_ptr<Response>)> &event ) {
-  this->onSuccess = event;
-}
-
 // todo: move this to a better place
 std::vector<std::string> explode( const std::string &delimiter, const std::string &str)
 {
@@ -74,6 +70,7 @@ std::vector<std::string> explode( const std::string &delimiter, const std::strin
 
 void mobagen::networking::Request::sendGet() {
 #if defined(EMSCRIPTEN) && defined(USE_CURL)
+
 #elif defined(USE_CURL)
   CURLcode res;
 
@@ -114,17 +111,25 @@ void mobagen::networking::Request::sendGet() {
   curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, WriteCallback);
   curl_easy_setopt(curl, CURLOPT_HEADERDATA, &headerBuffer);
 
-  // todo: set progress
+  // set progress
   // https://curl.haxx.se/libcurl/c/progressfunc.html
-  // curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+  if(onUpdate) {
+    curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(curl, CURLOPT_XFERINFOFUNCTION, progressFunc);
+    curl_easy_setopt(curl, CURLOPT_XFERINFODATA, this);
+  }
 
   // run it baby
   res = curl_easy_perform(curl);
-  if(res != CURLE_OK)
-  {
-    // auto stderr = curl_easy_strerror(res);
-    // auto codeerr = res;
-    // todo: respond the error
+  // if we face some problems
+  if(res != CURLE_OK) {
+    response->error.message = curl_easy_strerror(res);
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response->error.code);
+    if(onError!= nullptr)
+      onError(response);
+    curl_slist_free_all(list);
+    curl_easy_cleanup(curl);
+    return;
   }
 
   // status
@@ -139,6 +144,8 @@ void mobagen::networking::Request::sendGet() {
         response->headers[pair[0]] = pair[1];
     }
   }
+
+  onSuccess(response);
 
   // free
   curl_slist_free_all(list);
@@ -158,4 +165,25 @@ void mobagen::networking::Request::setHeaders(std::map<std::string, std::string>
     auto value = element.second;
     this->headers[key] = value;
   });
+}
+
+int mobagen::networking::Request::progressFunc(void *p, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal,
+                                               curl_off_t ulnow) {
+  // todo: check if this pointer is valid
+  auto *req = (Request *)p;
+
+  if(req->onUpdate){
+    float upload=0, download=0;
+    if(ultotal>0)
+      upload = (float)ulnow/(float)ultotal;
+    if(dltotal>0)
+      download = (float)dlnow/(float)dltotal;
+
+    if(download>upload)
+      return (int)req->onUpdate(download);
+    else
+      return (int)req->onUpdate(upload);
+  }
+  else
+    return 1;
 }

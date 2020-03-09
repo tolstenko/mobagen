@@ -8,6 +8,7 @@
 #include "Response.hpp"
 
 #if defined(EMSCRIPTEN) && defined(USE_CURL)
+#include <emscripten/fetch.h>
 #elif defined(USE_CURL)
 #include <curl/curl.h>
 #endif
@@ -20,11 +21,17 @@ namespace mobagen::networking {
     HttpVerbEnum method;
     std::string url;
     std::string body;
-    std::function<void(std::shared_ptr<Response>)> onSuccess;
 #if defined(EMSCRIPTEN) && defined(USE_CURL)
+    void downloadSucceeded(emscripten_fetch_t *fetch);
+    void downloadFailed(emscripten_fetch_t *fetch);
+
 #elif defined(USE_CURL)
     CURL* curl;
     static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp);
+    static int progressFunc(void *p,
+                        curl_off_t dltotal, curl_off_t dlnow,
+                        curl_off_t ultotal, curl_off_t ulnow);
+
 #endif
   public:
     void setHeader(std::string &key, std::string &value);
@@ -34,9 +41,9 @@ namespace mobagen::networking {
     void setUrl(std::string& url);
     void setData(std::string& data);
     void send();
-    void setOnSuccess(std::function<void(std::shared_ptr<Response>)> &);
-    // update
-    // error
+    std::function<void(std::shared_ptr<Response>)> onSuccess;
+    std::function<void(std::shared_ptr<Response>)> onError;
+    std::function<bool(float downloaded)> onUpdate;
   private:
     void sendGet();
   };

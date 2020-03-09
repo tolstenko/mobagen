@@ -24,7 +24,7 @@ namespace mobagen::networking {
     UNKNOWN_ERROR = 1000,
   };
 
-  class Error {
+  struct Error {
     int32 code;
     std::string message;
   };

@@ -1,25 +1,12 @@
-#include "components/MeshRenderer.hpp"
-#include "components/PerspectiveCamera.hpp"
 #include "components/OrthoCamera.hpp"
-#include "components/FreeMove.hpp"
 #include "components/FreeLook.hpp"
-#include "components/DirectionalLight.hpp"
-#include "components/SpotLight.hpp"
-#include "components/PointLight.hpp"
-#include "components/SphereCollider.hpp"
-
-#include "Plane.hpp"
 #include "Mesh.hpp"
 #include "Texture.hpp"
 #include "Logger.hpp"
-#include "MeshLoader.hpp"
 #include "Engine.hpp"
-#include <SDL_main.h>
-#include <iostream>
 #include <map>
-#include <random>
 #include <networking/Request.hpp>
-#include "WebRequest.hpp"
+
 
 using namespace mobagen;
 
@@ -50,23 +37,24 @@ void DocEditor::init(GLManager *glManager)
   std::map<std::string, std::string> headers = {{"tolsta","tolsta"},{"Content-Type", "text/plain"}};
   std::string body = "this is raw data";
   std::string get = "https://www.httpbin.org/get";
+  std::string err = "http://dl5.webmfiles.org/big-buck-bunny_trailer.webm";
   std::string post = "https://www.httpbin.org/post";
 
-  auto request = new mobagen::networking::Request();
-  request->setUrl(get);
+  auto *request = new mobagen::networking::Request();
+  request->setUrl(err);
   request->setMethod(HttpVerbEnum::GET);
   request->setHeaders(headers);
+  request->onError = [](const std::shared_ptr<mobagen::networking::Response>& res){
+    log_info("%d %s", res->status_code, res->error.message.c_str());
+  };
+  request->onSuccess = [](const std::shared_ptr<mobagen::networking::Response>& res){
+    log_info("%d %s", res->status_code, res->text.c_str());
+  };
+  request->onUpdate = [](float progress){
+    log_info("progress: %f", progress);
+    return false;
+  };
   request->send();
-
-  WebRequest::Get(get,headers,[](const std::string& err, const std::string& res){
-    log_info("%s",err.c_str());
-    log_info("%s",res.c_str());
-  });
-
-  WebRequest::Post(post,headers,body,[](const std::string& err, const std::string& res){
-    log_info("%s",err.c_str());
-    log_info("%s",res.c_str());
-  });
 }
 
 int main(int argc, char *argv[]) {
