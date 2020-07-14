@@ -21,11 +21,12 @@ namespace mobagen::networking {
     HttpVerbEnum method;
     std::string url;
     std::string body;
+
 #if defined(EMSCRIPTEN) && defined(USE_CURL)
     void downloadSucceeded(emscripten_fetch_t *fetch);
     void downloadFailed(emscripten_fetch_t *fetch);
-
 #elif defined(USE_CURL)
+
     CURL* curl;
     static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp);
     static int progressFunc(void *p,

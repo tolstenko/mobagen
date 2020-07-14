@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15.3)
+cmake_minimum_required(VERSION 3.14.3)
 
 MESSAGE(STATUS "MSYS=${MSYS}")
 MESSAGE(STATUS "CYGWIN=${CYGWIN}")
