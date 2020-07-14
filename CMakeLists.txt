@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.14.3)
 
 MESSAGE(STATUS "MSYS=${MSYS}")
 MESSAGE(STATUS "CYGWIN=${CYGWIN}")
@@ -10,10 +10,15 @@ IF(NOT DEFINED MINGW)
   SET(MINGW OFF)
 ENDIF()
 
+# check if mingw
 IF("${CMAKE_GENERATOR}" MATCHES "(M|m?)in(G|g?)(W|w?)")
   SET(MINGW ON)
   MESSAGE(STATUS "MinGW Detected")
 ENDIF()
+
+if(DEFINED WIN32)
+  SET(CMAKE_CXX_FLAGS "/w /EHsc")
+endif()
 
 # CHECK OR APPLE MACHINE
 IF(NOT DEFINED APPLE)
@@ -38,6 +43,7 @@ option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
         URL "https://github.com/cpp-pm/hunter/archive/v0.23.248.tar.gz"
         SHA1 "a637ec52a1b82beb5f55ab4aa75fac30bcee8904"
+        FILEPATH "${CMAKE_CURRENT_SOURCE_DIR}/config.cmake"
 )
 project(Engine)
 
@@ -48,80 +54,79 @@ set(CP_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake)
 include(${CP_CMAKE_DIR}/macros.cmake)
 
 # read build configs
-IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/buildconfig.txt")
-  message(FATAL_ERROR "The file buildconfig.txt must exists to load build configurations from it.")
+IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/buildconfig.mk")
+  message(FATAL_ERROR "The file buildconfig.mk must exists to load build configurations from it.")
 ENDIF()
 
-IF(NOT DEFINED ${USE_BULLET})
-  readSettingFile("USE_BULLET=" "ON" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_BULLET ON)
-  else()
-    set(USE_BULLET OFF)
-  endif()
-  message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
-ENDIF()
+ReadVariables(buildconfig.mk)
 
-IF(NOT DEFINED ${USE_GDCM})
-  readSettingFile("USE_GDCM=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${USE_GDCM}" "ON" is_equal)
-  if(is_equal)
-    set(USE_GDCM ON)
-  else()
-    set(USE_GDCM OFF)
-  endif()
-  message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
-ENDIF()
-
-IF(NOT DEFINED ${USE_CURL})
-  readSettingFile("USE_CURL=" "OFF" STRING_RESULT )
-  string(COMPARE EQUAL "${STRING_RESULT}" "ON" is_equal)
-  if(is_equal)
-    set(USE_CURL ON)
-  else()
-    set(USE_CURL OFF)
-  endif()
-  message(STATUS "USE_CURL from config file: ${USE_CURL}")
-ENDIF()
+message(STATUS "``'-.,_,.-'``'-.,_,.='``'-.,_,.-'`` Build Config ``'-.,_,.-'``'-.,_,.='``'-.,_,.-'``")
+message(STATUS "USE_BULLET from config file: ${USE_BULLET}")
+message(STATUS "USE_GDCM from config file: ${USE_GDCM}")
+message(STATUS "USE_CURL from config file: ${USE_CURL}")
+message(STATUS "USE_v8 from config file: ${USE_V8}")
+message(STATUS "``'-.,_,.-'``'-.,_,.='``'-.,_,.-'`` Build Config ``'-.,_,.-'``'-.,_,.='``'-.,_,.-'``")
 
 IF(APPLE)
   add_definitions(-DAPPLE)
 ENDIF()
 
+IF(USE_V8)
+  message(STATUS "######################### ADDING V8 #######################################")
+  hunter_add_package(v8)
+  find_package(v8 CONFIG REQUIRED)
+ENDIF()
+
+#message(STATUS "######################### ADDING GLM #######################################")
+#hunter_add_package(glm)
+#find_package(glm REQUIRED)
+
 IF(USE_CURL)
+#  message(STATUS "######################### ADDING OpenSSL #######################################")
+#  hunter_add_package(OpenSSL)
+#  find_package(OpenSSL REQUIRED)
+
+  message(STATUS "######################### ADDING cpr #######################################")
+  hunter_add_package(cpr)
+  find_package(cpr CONFIG REQUIRED)
+
+#  message(STATUS "######################### ADDING CPR - CURL for PEOPLE #######################################")
+#  hunter_add_package(cpr)
+#  find_package(cpr CONFIG REQUIRED)
+
   add_definitions(-DUSE_CURL)
 ENDIF()
 
-if (USE_CURL AND MINGW)
-  find_package(CURL REQUIRED)
-endif ()
 
-IF(USE_CURL AND APPLE)
-  find_program (perl_path NAMES perl perl.exe)
-  IF (NOT perl_path)
-    message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
-  ELSE()
-    message(STATUS "Perl was found in PATH: ${perl_path}")
-  ENDIF()
-
-  message(STATUS "######################### ADDING OPENSSL #######################################")
-  hunter_add_package(OpenSSL)
-  find_package(OpenSSL REQUIRED)
-
-  message(STATUS "######################### ADDING CURL #######################################")
-  hunter_add_package(CURL)
-  find_package(CURL CONFIG REQUIRED)
-ENDIF()
+#if (USE_CURL AND MINGW)
+#  find_package(CURL REQUIRED)
+#endif ()
+#
+#IF(USE_CURL AND APPLE)
+#  find_program (perl_path NAMES perl perl.exe)
+#  IF (NOT perl_path)
+#    message(FATAL_ERROR "You must install PERL and add it to PATH in order to build CURL")
+#  ELSE()
+#    message(STATUS "Perl was found in PATH: ${perl_path}")
+#  ENDIF()
+#
+#  message(STATUS "######################### ADDING OPENSSL #######################################")
+#  hunter_add_package(OpenSSL)
+#  find_package(OpenSSL REQUIRED)
+#
+#  message(STATUS "######################### ADDING CURL #######################################")
+#  hunter_add_package(CURL)
+#  find_package(CURL CONFIG REQUIRED)
+#ENDIF()
 
 # zlib support
-message(STATUS "######################### ADDING ZLIB #######################################")
-hunter_add_package(ZLIB)
-find_package(ZLIB CONFIG REQUIRED)
-
-message(STATUS "######################### ADDING MINIZIP #######################################")
-hunter_add_package(minizip)
-find_package(minizip CONFIG REQUIRED)
+#message(STATUS "######################### ADDING ZLIB #######################################")
+#hunter_add_package(ZLIB)
+#find_package(ZLIB CONFIG REQUIRED)
+#
+#message(STATUS "######################### ADDING MINIZIP #######################################")
+#hunter_add_package(minizip)
+#find_package(minizip CONFIG REQUIRED)
 
 IF(USE_BULLET)
   message(STATUS "######################### ADDING BULLET #######################################")
@@ -140,7 +145,7 @@ ENDIF()
 set(NOMINMAX ON CACHE BOOL "workaround for minmax problem with windows.h")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(BUILD_STATIC_LIBS TRUE)
@@ -157,17 +162,19 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/lib)
 
-add_definitions(-DGLEW_STATIC)
-add_definitions(-UGLEW_BUILD)
-
 add_subdirectory( dependencies )
 
-message(STATUS "######################### ADDING ASSIMP #######################################")
-hunter_add_package(Assimp)
-find_package(Assimp CONFIG REQUIRED)
+#message(STATUS "######################### ADDING ASSIMP #######################################")
+#hunter_add_package(Assimp)
+#find_package(Assimp CONFIG REQUIRED)
 
-if(USE_GDCM)
-  include(${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/GDCMConfig.cmake )
+IF(USE_GDCM)
+  message(STATUS "######################### ADDING GDCM #######################################")
+  if(POLICY CMP0024)
+    cmake_policy(SET CMP0024 OLD)
+  endif()
+  find_package( GDCM REQUIRED PATHS ${CMAKE_CURRENT_BINARY_DIR}/dependencies/gdcm/ )
+
   SET(GDCM_LIBRARIES
           gdcmCommon
           gdcmDICT
@@ -185,11 +192,19 @@ if(USE_GDCM)
           #gdcmuuid
           socketxx
           )
-endif()
+ENDIF()
 
-#set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
-#set ( ASSIMP_LIBRARY assimp )
-set ( ASSIMP_LIBRARY Assimp::assimp )
+set ( ASSIMP_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/assimp/include )
+set ( ASSIMP_LIBRARY assimp )
+
+set(ENGINE_INCLUDES
+        ${ASSIMP_INCLUDE_DIR}
+        ${CMAKE_BINARY_DIR}/dependencies/assimp/include)
+
+#set ( ASSIMP_LIBRARY Assimp::assimp )
+
+add_definitions(-DGLM_ENABLE_EXPERIMENTAL)
+add_definitions(-DGLM_FORCE_SWIZZLE)
 
 set ( GLM_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/glm/ )
 
@@ -201,19 +216,20 @@ set ( IMGUI_LIBRARY imgui )
 IF (EMSCRIPTEN)
   #SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/Engine/example/assets/ -s DEMANGLE_SUPPORT=1 -s ASSERTIONS=2 -s TOTAL_MEMORY=536870912 -s USE_SDL=2 -std=c++14 -Oz")
   #SET(CMAKE_CXX_FLAGS "--closure 1 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -Oz ")
-  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2")
+  SET(CMAKE_CXX_FLAGS "--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/assets/ -s WASM=0 -s ALLOW_MEMORY_GROWTH=1 -s USE_SDL=2 -s DISABLE_EXCEPTION_CATCHING=2 -s USE_PTHREADS=1 --proxy-to-worker -s FETCH=1")
   add_definitions(-DASSET_DIR="${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
+          glm
           ${ASSIMP_LIBRARY}
           ${IMGUI_LIBRARY}
           ${GDCM_LIBRARIES}
           )
 
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -230,6 +246,7 @@ ELSEIF(ANDROID)
   add_definitions( -DGLES2=1 )
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
           SDL2::SDL2
           SDL2::SDL2main
           ${ASSIMP_LIBRARY}
@@ -238,9 +255,8 @@ ELSEIF(ANDROID)
           )
 
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -252,6 +268,7 @@ ELSE ()
   find_package(OpenGL REQUIRED)
 
   set(ENGINE_LIBS
+          ${ENGINE_LIBS}
           SDL2::SDL2
           SDL2::SDL2main
           ${OPENGL_LIBRARY}
@@ -259,9 +276,8 @@ ELSE ()
           ${IMGUI_LIBRARY}
           )
   set(ENGINE_INCLUDES
+          ${ENGINE_INCLUDES}
           ${GLM_INCLUDE_DIRS}
-#          ${ASSIMP_INCLUDE_DIR}
-#          ${CMAKE_BINARY_DIR}/dependencies/assimp/include
           ${CMAKE_CURRENT_SOURCE_DIR}/dependencies/stb
           ${IMGUI_INCLUDE_DIRS}
           ${CMAKE_CURRENT_SOURCE_DIR}/engine/
@@ -291,14 +307,31 @@ ENDIF()
 
 SET(ENGINE_LIBS ${ENGINE_LIBS} ZLIB::zlib)
 
-IF(USE_CURL AND MINGW)
-  SET(ENGINE_INCLUDES ${ENGINE_INCLUDES} ${CURL_INCLUDE_DIR})
-  SET(ENGINE_LIBS ${ENGINE_LIBS} ${CURL_LIBRARIES})
+#IF(USE_CURL AND MINGW)
+#  SET(ENGINE_INCLUDES ${ENGINE_INCLUDES} ${CURL_INCLUDE_DIR})
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} ${CURL_LIBRARIES})
+#ELSEIF(USE_CURL AND APPLE)
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
+#ELSE()
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl BoringSSL::ssl BoringSSL::crypto)
+#ENDIF()
+
+IF(USE_v8)
+  SET(ENGINE_LIBS ${ENGINE_LIBS}
+        v8::v8_libplatform
+        v8::v8_libbase
+        v8::v8_base
+        v8::v8_nosnapshot
+        v8::v8_init
+        v8::v8_initializers
+        v8::v8_libsampler)
 ENDIF()
 
-IF(USE_CURL AND APPLE)
-  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto)
+IF(USE_CURL)
+#  SET(ENGINE_LIBS ${ENGINE_LIBS} CURL::libcurl OpenSSL::SSL OpenSSL::Crypto cpr::cpr)
+  SET(ENGINE_LIBS ${ENGINE_LIBS} cpr::cpr)
 ENDIF()
+
 
 include_directories(${ENGINE_INCLUDES})
 

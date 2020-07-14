@@ -1,7 +1,11 @@
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 #set(BUILD_SHARED_LIBS TRUE) TODO: check if this could be improved
 
-file(GLOB TARGET_INC ${CMAKE_CURRENT_SOURCE_DIR}/*.h ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp)
+file(GLOB TARGET_INC
+        ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp,
+        ${CMAKE_CURRENT_SOURCE_DIR}/networking/*.h
+        ${CMAKE_CURRENT_SOURCE_DIR}/networking/*.hpp)
 list(REMOVE_ITEM TARGET_INC ${CMAKE_CURRENT_SOURCE_DIR}/stdafx.h)
 file(GLOB TARGET_INC_COMPONENTS ${CMAKE_CURRENT_SOURCE_DIR}/components/*.h ${CMAKE_CURRENT_SOURCE_DIR}/components/*.hpp)
 
@@ -13,6 +17,8 @@ file(GLOB TARGET_SRC
 file(GLOB TARGET_SRC_COMPONENTS
   ${CMAKE_CURRENT_SOURCE_DIR}/components/*.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/components/*.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/networking/*.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/networking/*.c
 )
 
 SET(TARGET_SRC ${TARGET_SRC} ${TARGET_SRC_COMPONENTS} ${TARGET_INC} ${TARGET_INC_COMPONENTS})
@@ -21,7 +27,7 @@ add_library (engine STATIC ${TARGET_SRC})
 
 If(NOT EMSCRIPTEN AND NOT ANDROID)
   add_definitions(-DGLEW_STATIC)
-  add_definitions(-UGLEW_BUILD)
+#  add_definitions(-DGLEW_BUILD)
   set(GLEW_USE_STATIC_LIBS ON CACHE BOOL "bla")
   set(BUILD_SHARED_LIBS OFF CACHE BOOL "bla")
   set( glew-cmake_BUILD_SHARED OFF CACHE BOOL "Build the shared glew library" )

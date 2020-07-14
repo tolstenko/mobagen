@@ -2,86 +2,75 @@
 
 #include "WebRequest.hpp"
 #include "Logger.hpp"
+#include "HttpVerb.hpp"
+
+#include "WwwTranscoder.hpp"
 
 namespace mobagen {
-  const std::string WebRequest::kHttpVerbCREATE = "CREATE";
-  const std::string WebRequest::kHttpVerbDELETE = "DELETE";
-  const std::string WebRequest::kHttpVerbGET = "GET";
-  const std::string WebRequest::kHttpVerbHEAD	= "HEAD";
-  const std::string WebRequest::kHttpVerbPOST = "POST";
-  const std::string WebRequest::kHttpVerbPUT = "PUT";
-
   WebRequest::WebRequest() {
-
-    method = &kHttpVerbGET;
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    easyhandle = nullptr;
-    curl_global_init(CURL_GLOBAL_ALL);
-#else
-#endif
+    this->url = "";
+    this->method = HttpVerbEnum::GET;
+    this->headers = std::map<std::string, std::string>();
+    this->body = "";
   }
 
-  WebRequest::WebRequest(std::string url) {
-    
-    method = &kHttpVerbGET;
-    this->url = std::move(url);
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    curl_global_init(CURL_GLOBAL_ALL);
-    easyhandle = nullptr;
-#else
-#endif
+  WebRequest::WebRequest(
+      const std::string &url,
+      const HttpVerbEnum &method,
+      const std::map<std::string, std::string>& headers,
+      const std::string &body) {
+    this->url = url;
+    this->method = method;
+    this->headers = headers;
+    this->body = body;
   }
 
   WebRequest::~WebRequest() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    if(easyhandle!=nullptr)
-      curl_easy_cleanup(easyhandle);
-    easyhandle = nullptr;
-    curl_global_cleanup(); // TODO: inspect if this is necessary
+#if defined(USE_CURL)
+
 #endif
   }
 
-  std::shared_ptr<WebRequest> WebRequest::Get(std::string url) {
-    std::shared_ptr<WebRequest> req = std::make_shared<WebRequest>();
-
-    req->method = &kHttpVerbGET;
-    req->url = std::move(url);
-    return req;
+  // VERBS
+  void
+  WebRequest::Get(
+      std::string &url,
+      const std::map<std::string, std::string>& headers,
+      const std::function<void(std::string, std::string)>& onFinish) {
+#if defined(EMSCRIPTEN) && defined(USE_CURL)
+#elif defined(USE_CURL)
+    cpr::Header h = (const std::map<std::basic_string<char>, std::basic_string<char>, cpr::CaseInsensitiveCompare> &) headers;
+    cpr::GetCallback([onFinish](const cpr::Response& r) {
+      onFinish(r.error.message,r.text);
+      return r.text;
+    },cpr::Url(url), h);
+#endif
   }
 
-  std::string WebRequest::GetRequestHeader(std::string name) {
-    return requestHeaders[name];
-  }
-
-  std::string WebRequest::GetResponseHeader(std::string name) {
-    return responseHeaders[name];
-  }
-
-  std::map<std::string, std::string> WebRequest::GetResponseHeaders() {
-    return responseHeaders;
-  }
-
-  void WebRequest::SetRequestHeader(std::string name, std::string value) {
-    requestHeaders[name] = value;
-  }
-
-  void WebRequest::SendWebRequest() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    easyhandle = curl_easy_init();
-    curl_easy_setopt(easyhandle, CURLOPT_URL, url.c_str());
-    curl_easy_setopt(easyhandle, CURLOPT_VERBOSE, 1L);
-    curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, WriteCallback);
-    curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, &readBuffer);
-
-    curl_easy_perform(easyhandle);
+  void
+  WebRequest::Post(
+      std::string &url,
+      const std::map<std::string, std::string> &headers,
+      const std::string &data,
+      const std::function<void(std::string, std::string)>& onFinish) {
+#if defined(EMSCRIPTEN) && defined(USE_CURL)
+#elif defined(USE_CURL)
+    cpr::PostCallback([onFinish](const cpr::Response& r) {
+      onFinish(r.error.message,r.text);
+      return r.text;
+    },cpr::Url(url), cpr::Body{data}, headers);
 #endif
   }
 
   std::string WebRequest::GetData() {
-#if (defined(APPLE) || defined (__MINGW64__)) && defined(USE_CURL)
-    return readBuffer;
+#if (defined(USE_CURL))
+    return "";
 #else
     return "";
 #endif
   }
+
+
+
+
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <random>
-#include "time.h"
+#include <ctime>
 
 namespace mobagen {
   class Random {
@@ -32,7 +32,7 @@ namespace mobagen {
     static float Range(float min, float max);
 
   private:
-    // todo: fix this abomination
+    // todo: fix this abomination, use pcg pls
     static std::mt19937_64 mt;
   };
 }

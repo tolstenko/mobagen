@@ -24,8 +24,7 @@ IF (ANDROID)
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ ${ANDROID_BIN_ROOT}/libs/${ANDROID_NDK_ABI_NAME})
 ELSE ()
   add_executable (midasminer main.cpp Menu.cpp CrystalPicker.cpp Crystal.cpp Matrix.cpp)
-  target_link_libraries (midasminer engine)
-  #cotire(midasminder)
+  target_link_libraries ( midasminer engine )
 
   add_custom_command(TARGET midasminer PRE_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
