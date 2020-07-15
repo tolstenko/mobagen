@@ -1,24 +1,24 @@
 [submodule "dependencies/glm"]
-	path = dependencies/glm
+	path = old/dependencies/glm
 	url = https://github.com/g-truc/glm.git
 [submodule "dependencies/imgui"]
-	path = dependencies/imgui
+	path = old/dependencies/imgui
 	url = https://github.com/ocornut/imgui.git
 [submodule "dependencies/gdcm"]
-	path = dependencies/gdcm
+	path = old/dependencies/gdcm
 	url = https://github.com/malaterre/GDCM.git
 [submodule "dependencies/stb"]
-	path = dependencies/stb
+	path = old/dependencies/stb
 	url = https://github.com/nothings/stb.git
 [submodule "dependencies/polly"]
-	path = dependencies/polly
+	path = old/dependencies/polly
 	url = https://github.com/ruslo/polly.git
 [submodule "dependencies/emsdk"]
-	path = dependencies/emsdk
+	path = old/dependencies/emsdk
 	url = https://github.com/juj/emsdk.git
 [submodule "cmake/gate"]
 	path = cmake/gate
-	url = https://github.com/hunter-packages/gate.git
+	url = https://github.com/cpp-pm/gate
 [submodule "dependencies/assimp"]
-	path = dependencies/assimp
+	path = old/dependencies/assimp
 	url = https://github.com/assimp/assimp
