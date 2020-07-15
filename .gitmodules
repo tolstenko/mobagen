@@ -22,3 +22,6 @@
 [submodule "dependencies/assimp"]
 	path = old/dependencies/assimp
 	url = https://github.com/assimp/assimp
+[submodule "deps/sdl"]
+	path = deps/sdl
+	url = https://github.com/SDL-mirror/SDL.git
