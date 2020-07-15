@@ -3,5 +3,4 @@ file(GLOB TARGET_SRC ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DI
 
 SET(TARGET_SRC ${TARGET_SRC} ${TARGET_INC} )
 
-add_executable (simple ${TARGET_SRC})
-target_link_libraries (simple engine)
+add_executable (test ${TARGET_SRC})
