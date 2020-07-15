@@ -14,7 +14,7 @@
 	path = old/dependencies/polly
 	url = https://github.com/ruslo/polly.git
 [submodule "dependencies/emsdk"]
-	path = old/dependencies/emsdk
+	path = deps/emsdk
 	url = https://github.com/juj/emsdk.git
 [submodule "cmake/gate"]
 	path = cmake/gate

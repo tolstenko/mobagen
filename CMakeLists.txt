@@ -9,6 +9,8 @@ HunterGate(
 )
 project(mobagen)
 
+set(NOMINMAX ON CACHE BOOL "workaround for minmax problem with windows.h")
+
 IF(NOT EMSCRIPTEN)
   message(STATUS "######################### ADDING SDL2 #######################################")
   hunter_add_package(SDL2)
