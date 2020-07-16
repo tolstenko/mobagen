@@ -42,3 +42,5 @@ build-emscripten/
 CMakeLists\.txt\.user
 
 dependencies/curl\.zip
+
+platforms/android/.gradle/
