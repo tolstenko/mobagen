@@ -44,3 +44,7 @@ CMakeLists\.txt\.user
 dependencies/curl\.zip
 
 platforms/android/.gradle/
+
+platforms/android/app/.cxx/
+
+platforms/android/app/.externalNativeBuild/
