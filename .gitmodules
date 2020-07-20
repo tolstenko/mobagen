@@ -22,3 +22,6 @@
 [submodule "deps/sdl"]
 	path = deps/sdl
 	url = https://github.com/SDL-mirror/SDL.git
+[submodule "deps/emsdk"]
+	path = deps/emsdk
+	url = https://github.com/emscripten-core/emsdk.git
