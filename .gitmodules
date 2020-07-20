@@ -10,9 +10,6 @@
 [submodule "dependencies/stb"]
 	path = old/dependencies/stb
 	url = https://github.com/nothings/stb.git
-[submodule "dependencies/polly"]
-	path = old/dependencies/polly
-	url = https://github.com/ruslo/polly.git
 [submodule "cmake/gate"]
 	path = cmake/gate
 	url = https://github.com/cpp-pm/gate
