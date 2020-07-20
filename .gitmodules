@@ -22,3 +22,6 @@
 [submodule "deps/emsdk"]
 	path = deps/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "deps/polly"]
+	path = deps/polly
+	url = https://github.com/ruslo/polly.git
