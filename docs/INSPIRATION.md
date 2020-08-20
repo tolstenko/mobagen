@@ -1,3 +1,14 @@
+- http://www.aortiz.me/2018/12/21/CG.html
+- https://github.com/Angelo1211/SoftwareRenderer/wiki/Rendering-References
+- https://fabiensanglard.net/duke3d/id%20as%20Super-Ego-%20The%20Creation%20of%20Duke%20Nukem%203D.pdf
+- https://fabiensanglard.net/
+- https://www.gamedesigning.org/learn/make-a-game-engine/
+- http://twvideo01.ubm-us.net/o1/vault/gdc2015/presentations/Gyrling_Christian_Parallelizing_The_Naughty.pdf
+- https://software.intel.com/content/www/us/en/develop/articles/designing-the-framework-of-a-parallel-game-engine.html
+- https://learnopengl.com/
+- https://github.com/id-Software
+- https://www.gamasutra.com/blogs/MichaelKissner/20151027/257369/Writing_a_Game_Engine_from_Scratch__Part_1_Messaging.php
+- https://fabiensanglard.net/duke3d/index.php
 - https://github.com/Shervanator/Engine
 - https://github.com/urho3d/Urho3D
 - https://github.com/godotengine/godot
