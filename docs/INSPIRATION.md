@@ -1,3 +1,4 @@
+- https://www.toptal.com/game/video-game-physics-part-i-an-introduction-to-rigid-body-dynamics
 - http://www.aortiz.me/2018/12/21/CG.html
 - https://github.com/Angelo1211/SoftwareRenderer/wiki/Rendering-References
 - https://fabiensanglard.net/duke3d/id%20as%20Super-Ego-%20The%20Creation%20of%20Duke%20Nukem%203D.pdf
