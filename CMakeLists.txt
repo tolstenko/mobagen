@@ -65,6 +65,6 @@ ENDIF()
 
 #include_directories(${ENGINE_INCLUDES})
 
-#ADD_SUBDIRECTORY(engine)
+ADD_SUBDIRECTORY(engine)
 
 ADD_SUBDIRECTORY(game)

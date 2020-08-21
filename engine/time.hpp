@@ -1,10 +1,5 @@
-#ifndef MOBAGEN_TIME_HPP
-#define MOBAGEN_TIME_HPP
-
+#pragma once
 
 class time {
 
 };
-
-
-#endif //MOBAGEN_TIME_HPP
