@@ -1,3 +1,7 @@
+- https://www.haroldserrano.com/blog/books-i-used-to-develop-a-game-engine
+- https://gafferongames.com/
+- https://www.redblobgames.com/
+- https://research.ncl.ac.uk/game/mastersdegree/gametechnologies/previousinformation/
 - https://www.toptal.com/game/video-game-physics-part-i-an-introduction-to-rigid-body-dynamics
 - http://www.aortiz.me/2018/12/21/CG.html
 - https://github.com/Angelo1211/SoftwareRenderer/wiki/Rendering-References
