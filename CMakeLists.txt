@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.10.0)
 include(cmake/gate/cmake/HunterGate.cmake)
 option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
-    URL "https://github.com/cpp-pm/hunter/archive/v0.23.261.tar.gz"
-    SHA1 "1540dad7b97c849784a09e8c452ba811c9f71ba2"
+    URL "https://github.com/cpp-pm/hunter/archive/v0.23.269.tar.gz"
+    SHA1 "64024b7b95b4c86d50ae05b926814448c93a70a0"
     LOCAL
 )
 project(mobagen)
