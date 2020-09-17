@@ -4,7 +4,9 @@ choco install -y msys2
 choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 SET "PATH=C:\tools\msys64;C:\tools\msys64\mingw64\bin;C:\tools\msys64\usr\bin;%PATH%"
 pacman -Syu
-pacman -S --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-glfw cmake git python mingw-w64-x86_64-git-lfs
+pacman -S --noconfirm --needed mingw-w64-x86_64-toolchain mingw-w64-x86_64-glfw cmake git mingw-w64-x86_64-git-lfs
 
 cd \
 git clone --recursive https://github.com/InfiniBrains/mobagen
+cd mobagen
+sh scripts\emscripten-install.sh
