@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.10.0)
 
 find_program(LSB_RELEASE_EXEC lsb_release) 
 if(LSB_RELEASE_EXEC) 
@@ -16,8 +16,8 @@ set (HUNTER_SKIP_LOCK ON CACHE BOOL "HUNTER_SKIP_LOCK")
 include(cmake/gate/cmake/HunterGate.cmake)
 option(HUNTER_STATUS_DEBUG "Hunter debug info" ON)
 HunterGate(
-        URL "https://github.com/ruslo/hunter/archive/v0.23.29.tar.gz"
-        SHA1 "797be99a8a4f4666766257563fad8aa3aa032da2"
+    URL "https://github.com/cpp-pm/hunter/archive/v0.23.269.tar.gz"
+    SHA1 "64024b7b95b4c86d50ae05b926814448c93a70a0"
 )
 project (Engine)
 
@@ -82,7 +82,7 @@ ENDIF()
 set(NOMINMAX ON CACHE BOOL "workaround for minmax problem with windows.h")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(cotire)

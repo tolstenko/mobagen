@@ -48,7 +48,7 @@ void Uploader::init(GLManager *glManager)
 
 int main(int argc, char *argv[]) {
   Uploader game;
-  Engine gameEngine(&game, "UPLOADER", glm::vec2(800,400));
+  Engine gameEngine(&game, "UPLOADER", glm::vec2(850,400));
 
   gameEngine.start();
 

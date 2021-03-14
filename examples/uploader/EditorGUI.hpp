@@ -14,6 +14,7 @@ public:
   void registerWithEngine(Engine* engine) override {};
   void deregisterFromEngine(Engine* engine) override {};
   void onGUI(ImGuiContext* context) override;
+  //std::string openDialog();
 
 
 
