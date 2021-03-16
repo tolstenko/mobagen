@@ -1,6 +1,34 @@
+# MoBaGEn
 
+# Motivation
+I started this game engine project because:
+- I want to sharpen my skills; 
+- I like to recreate things by hand; 
+- I want to have full control of all the processes from code to the delivery;
+- I want a job as a Game Engine Developer.
 
-Components
+## Hire Me!
+Did you like this project? Hire me as a GamGame Engine Developer! [linkedin](https://linkedin.com/in/aletolstenko)
 
+# Why C++
+- Has many solid, well maintained, efficient and stable libs;
+- It speaks straight to hardware, you can do whatever you want;
+- It is portable.
 
-www.diagram.codes/d/system-layers/V%5Bcore%2Cengine%2Ceditor%2Csamples%5D%20with%20label%20%22Architecture%22%0A%0Acore%3DH%5B%22Math%22%2C%22Containers(%3F)%22%2C%22Log%22%2Cplatform%5D%20with%20label%20%22Core%22%0Aplatform%3DH%5Bmobile%2Cdesktop%2C%22web%22%5D%20with%20label%20%22Platform%20Specific%22%0Amobile%3DH%5B%22android%22%2C%22ios%22%5D%20with%20label%20%22Mobile%22%0Adesktop%3DH%5B%22win%22%2C%22osx%22%2C%22linux%22%5D%20with%20label%20%22Desktop%22%0Aengine%3DH%5Borchestrator%2Crendering%2Cphysics%2Cresource%2Canimation%2Cnetworking%2Cgameplay%5D%20with%20label%20%22Engine%20Modules%22%0Arendering%3DV%5B%22GUI%22%2C%22Rendering%22%2C%22Shaders%22%2C%22Scripting%22%2C%22Materials%22%5D%20with%20label%20%22Graphics%22%0A%0Aphysics%3DV%5B%22Particles%22%2C%22Collision%22%2C%22RigidBody%22%2C%22Constrains%22%5D%20with%20label%20%22Physics%22%0Aanimation%3DV%5B%22Skeleton%22%2C%22Poses%22%2C%22Clip%22%2C%22Skinning%22%2C%22Blending%22%2C%22Sprite%22%5D%20with%20label%20%22Animation%22%0Aorchestrator%3DV%5B%22Time%5CnManager%22%2C%22Job%5CnScheduler%22%2C%22IO%22%2C%22Predict%5CnRollback%22%2C%20%22Plugin%5CnManager%22%5D%20with%20label%20%22Orchestrator%22%0A%0Agameplay%3DV%5B%22Scripting%22%2C%22Scene%5CnGraph%22%2C%22ECS%22%2C%22Events%20%26%5CnMessaging%22%2C%22AI%22%5D%20with%20label%20%22Gameplay%22%0Anetworking%3DV%5B%22HTTPs%22%2C%22Real-Time%22%5D%20with%20label%20%22Networking%22%0Aresource%3DV%5B%22Mesh%22%2C%22Audio%22%2C%22Video%22%2C%22Image%22%2C%22Text%22%2C%22Font%22%2C%22Binary%22%2C%22Prefab%22%5D%20with%20label%20%22Resource%5CnManager%22%0A%0Aeditor%3DV%5Beditor1%5D%20with%20label%20%22Editor%22%0Aeditor1%3DH%5B%22Simulator%22%2C%22Visual%20Scripting%22%2C%22Scene%20Editor%22%2C%22Animator%22%5D%0A%23editor2%3DH%5B%22%22%5D%0A%0Asamples%3DH%5B%22Match3%22%5D%20with%20label%20%22Samples%22
+# Why C++14
+Mostly because of [this compiller support table](https://en.cppreference.com/w/cpp/compiler_support). I wish I could 
+use coroutines and many other fancy C++20 features, but just think on the frustration in developing lots of cool 
+stuff and then you discover it wont work on a specific console compiler? So better safe than sorry.
+
+# Why CMAKE
+It is the best all-around solution to:
+- Create projects cross platform
+- Configure variables and flags
+- Build complex projects in a easy way
+- Most relevant libs supports it 
+
+# Why CPP-PM
+- Best package manager to import and use third party libs from source code with low maintainance code.
+
+# Architecture
+Please refer to [this doc.](docs/Architecture.md)
